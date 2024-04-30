@@ -25,12 +25,14 @@ public class CodegenResolver {
         System.out.println("Processing parameter: " + parameter.baseName);
         if (parameter.isEnum) {
             IEnumResolver.processEnumParameter(parameter);
-        }
-        if (parameter.vars != null) {
-            for (CodegenProperty property : parameter.vars) {
-                processProperty(property); // Process properties within the parameter
+        } else {
+            if (parameter.vars != null) {
+                for (CodegenProperty property : parameter.vars) {
+                    processProperty(property);
+                }
             }
         }
+        
     }
 
     public void processProperty(final CodegenProperty property) {
@@ -38,11 +40,11 @@ public class CodegenResolver {
 
         if (property.isEnum) {
             IEnumResolver.processEnumProperty(property);
-        }
-
-        if (property.vars != null) {
-            for (CodegenProperty nestedProperty : property.vars) {
-                processProperty(nestedProperty);
+        } else {
+            if (property.vars != null) {
+                for (CodegenProperty nestedProperty : property.vars) {
+                    processProperty(nestedProperty);
+                }
             }
         }
     }

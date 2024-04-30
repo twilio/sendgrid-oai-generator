@@ -1,7 +1,62 @@
 package com.sendgrid.oai;
 
+import com.sendgrid.oai.constants.EnumConstants.Generator;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.io.FileUtils;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.openapitools.codegen.ClientOptInput;
+import org.openapitools.codegen.DefaultGenerator;
+import org.openapitools.codegen.config.CodegenConfigurator;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import static org.junit.Assert.assertFalse;
+
+@RequiredArgsConstructor
+@RunWith(Parameterized.class)
 public class SendgridGeneratorTest {
-    public static void main(String[] args) {
-        System.out.println("Hello Sendgrid test");
+    @Parameterized.Parameters
+    public static Collection<Generator> generators() {
+        return Arrays.asList(
+                Generator.SENDGRID_JAVA);
+    }
+
+    private final Generator generator;
+
+    @BeforeClass
+    public static void setUp() {
+        FileUtils.deleteQuietly(new File("codegen"));
+    }
+
+    @Test
+    public void launchGenerator() {
+        final String pathname = "examples/spec/tsg_domain_authentication.yaml";
+        //final String pathname = "/Users/sbansla/Documents/code/twilio-oai-generator/examples/spec/twilio_api_v2010.yaml";
+        File filesList[];
+        File directoryPath = new File(pathname);
+        if (directoryPath.isDirectory()) {
+            filesList = directoryPath.listFiles();
+        } else {
+            filesList = new File[]{directoryPath};
+        }
+        for (File file : filesList) {
+            final CodegenConfigurator configurator = new CodegenConfigurator()
+                    .setGeneratorName(generator.getValue())
+                    .setInputSpec(file.getPath())
+                    .setOutputDir("codegen/" + generator.getValue())
+                   // .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
+                    .addGlobalProperty("apiTests", "false")
+                    .addGlobalProperty("apiDocs", "false");
+            final ClientOptInput clientOptInput = configurator.toClientOptInput();
+            DefaultGenerator generator = new DefaultGenerator();
+            final List<File> output = generator.opts(clientOptInput).generate();
+            assertFalse(output.isEmpty());
+        }
     }
 }

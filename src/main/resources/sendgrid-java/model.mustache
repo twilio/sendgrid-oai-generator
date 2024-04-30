@@ -1,0 +1,43 @@
+{{>licenseInfo}}
+
+package {{package}};
+{{#imports}}
+import {{import}};
+{{/imports}}
+
+{{#models}}{{#model}}
+@ToString
+public class {{classname}} {
+{{#vars}}
+    private final {{{datatype}}} {{name}};
+{{/vars}}
+    private {{classname}}(Builder builder) {
+    {{#vars}}
+        this.{{name}} = builder.{{name}};
+    {{/vars}}
+    }
+    public int get{{name}}() {
+        return {{name}};
+    }
+
+    // Builder class for constructing object
+    public static class Builder {
+    {{#vars}}
+        private final {{{datatype}}} {{name}};
+    {{/vars}}
+        public Builder({{#requiredVars}} {{{datatype}}} {{name}} {{^-last}},{{/-last}}{{/requiredVars}}) {
+            {{#requiredVars}}
+            this.{{name}} = {{name}};
+            {{/requiredVars}}
+        }
+        {{#optionalVars}}
+        public Builder {{name}}({{{datatype}}} {{name}}) {
+            this.{{name}} = {{name}};
+            return this;
+        }
+        {{/optionalVars}}
+    }
+    
+}
+        
+{{/model}}{{/models}}

@@ -59,13 +59,15 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         additionalProperties().put("apiVersionClass", "v3");
 
         additionalProperties.put("apiFilename", "Shobhit");
-
-        twilioCodegen.setDomain("api");
-        twilioCodegen.setVersion("v3");
-        twilioCodegen.setOutputDir("api", "v3");
+        String domain = twilioCodegen.getDomainFromOpenAPI(openAPI);
+        String version = twilioCodegen.getVersionFromOpenAPI(openAPI);
+        twilioCodegen.setDomain(domain);
+        twilioCodegen.setVersion(version);
+        twilioCodegen.setOutputDir(domain, version);
         //directoryStructureService.clearTag(openAPI);
         //directoryStructureService.configure(openAPI);
     }
+
 
     public String toApiFilename(String name) {
         return this.toApiName(name);

@@ -1,10 +1,15 @@
 package com.sendgrid.oai.common;
 
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.DefaultCodegen;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static com.sendgrid.oai.constants.ApplicationConstants.*;
 
 @RequiredArgsConstructor
 public class TwilioCodegenAdapter {
@@ -38,11 +43,15 @@ public class TwilioCodegenAdapter {
     }
 
     public String getVersionFromOpenAPI(final OpenAPI openAPI) {
-        return "v3";
+        return openAPI.getInfo().getVersion() == null ? VERSION : openAPI.getInfo().getVersion();
     }
 
     public String getDomainFromOpenAPI(final OpenAPI openAPI) {
-        return "abc";
+        Server server = openAPI.getServers().get(0);
+        Pattern pattern = Pattern.compile(DOMAIN_REGEX);
+        Matcher matcher = pattern.matcher(server.getUrl());
+        matcher.find();
+        return matcher.group(1);
     }
 
     public void setDomain(final String domain) {
@@ -61,7 +70,7 @@ public class TwilioCodegenAdapter {
     public void setOutputDir(final String domain, final String version) {
         final String domainPackage = domain.replaceAll("[-.]", "");
         final String versionPackage = version.replaceAll("[-.]", "");
-        codegen.setOutputDir("codegen/abc/v3");
+        codegen.setOutputDir(originalOutputDir + FILE_SEPARATOR + domainPackage + FILE_SEPARATOR + versionPackage);
     }
 
 }

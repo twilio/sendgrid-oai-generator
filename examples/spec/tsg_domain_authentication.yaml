@@ -28,6 +28,7 @@ info:
     url: https://www.apache.org/licenses/LICENSE-2.0.html
    # identifier: Apache
   version: v3
+  x-extension: domain_authentication
 servers:
 - url: https://api.sendgrid.com
   description: The Twilio SendGrid v3 API
@@ -146,7 +147,7 @@ paths:
     post:
       operationId: CreateWhitelabelDomains
       summary: Authenticate a domain
-      tags: 
+      tags:
       - Domain
       description: '**This endpoint allows you to authenticate a domain.**
 

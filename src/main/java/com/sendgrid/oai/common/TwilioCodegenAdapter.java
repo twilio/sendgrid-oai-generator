@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.DefaultCodegen;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.sendgrid.oai.constants.ApplicationConstants.*;
 
@@ -54,6 +56,24 @@ public class TwilioCodegenAdapter {
         return matcher.group(1);
     }
 
+    public String getExtensionFromOpenAPI(OpenAPI openAPI,String inputSpec){
+        return openAPI.getInfo().getExtensions() != null ? getExtensionFromOpenAPISpec(openAPI.getInfo().getExtensions()) : getExtensionFromFileName(inputSpec);
+    }
+
+    public String getExtensionFromOpenAPISpec(Map<String,Object> extensions){
+        String extensionValue = extensions.get("x-extension").toString();
+        String directoryValue = Arrays.stream(extensionValue.split("_")).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
+        return directoryValue;
+
+    }
+
+    public String getExtensionFromFileName(String inputSpec){
+        String[] inputSpecArray = inputSpec.split("//");
+        String fileName = inputSpecArray[inputSpecArray.length-1];
+        fileName = fileName.substring(0,fileName.indexOf(".yaml"));
+        return Arrays.stream(fileName.split("_"), 1, fileName.split("_").length).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
+    }
+
     public void setDomain(final String domain) {
         final String domainPackage = domain.replaceAll("[-.]", "");
 
@@ -67,10 +87,10 @@ public class TwilioCodegenAdapter {
         codegen.additionalProperties().put("apiVersionClass", "V3");
     }
 
-    public void setOutputDir(final String domain, final String version) {
+    public void setOutputDir(final String domain, final String version, final String extension) {
         final String domainPackage = domain.replaceAll("[-.]", "");
         final String versionPackage = version.replaceAll("[-.]", "");
-        codegen.setOutputDir(originalOutputDir + FILE_SEPARATOR + domainPackage + FILE_SEPARATOR + versionPackage);
+        codegen.setOutputDir(originalOutputDir + FILE_SEPARATOR + domainPackage + FILE_SEPARATOR + extension + FILE_SEPARATOR + versionPackage);
     }
 
 }

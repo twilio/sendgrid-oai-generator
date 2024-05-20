@@ -62,7 +62,7 @@ public class TwilioCodegenAdapter {
 
     public String getExtensionFromOpenAPISpec(Map<String,Object> extensions){
         String extensionValue = extensions.get("x-extension").toString();
-        String directoryValue = Arrays.stream(extensionValue.split("_")).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
+        String directoryValue = extensionValue.split("_")[0] + Arrays.stream(extensionValue.split("_"), 1, extensionValue.split("_").length).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
         return directoryValue;
 
     }
@@ -71,7 +71,7 @@ public class TwilioCodegenAdapter {
         String[] inputSpecArray = inputSpec.split("//");
         String fileName = inputSpecArray[inputSpecArray.length-1];
         fileName = fileName.substring(0,fileName.indexOf(".yaml"));
-        return Arrays.stream(fileName.split("_"), 1, fileName.split("_").length).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
+        return fileName.split("_")[1] + Arrays.stream(fileName.split("_"), 2, fileName.split("_").length).map(s -> s.substring(0, 1).toUpperCase() + s.substring(1)).collect(Collectors.joining());
     }
 
     public void setDomain(final String domain) {

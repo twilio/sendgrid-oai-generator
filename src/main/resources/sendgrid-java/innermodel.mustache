@@ -1,0 +1,37 @@
+{{#models}}{{#model}}
+    @ToString
+    public static class {{classname}} {
+    {{#vars}}
+        private final {{{datatype}}} {{name}};
+    {{/vars}}
+    private {{classname}}(Builder builder) {
+    {{#vars}}
+        this.{{name}} = builder.{{name}};
+    {{/vars}}
+    }
+
+    // Builder class for constructing object
+    public static class Builder {
+    {{#vars}}
+        private {{{datatype}}} {{name}};
+    {{/vars}}
+    public Builder({{#requiredVars}} {{{datatype}}} {{name}} {{^-last}},{{/-last}}{{/requiredVars}}) {
+    {{#requiredVars}}
+        this.{{name}} = {{name}};
+    {{/requiredVars}}
+    }
+    {{#optionalVars}}
+        public Builder {{name}}({{{datatype}}} {{name}}) {
+        this.{{name}} = {{name}};
+        return this;
+        }
+    {{/optionalVars}}
+    }
+
+    {{#vendorExtensions.dependent}}
+        {{>innermodel}}
+    {{/vendorExtensions.dependent}}
+
+    }
+
+{{/model}}{{/models}}

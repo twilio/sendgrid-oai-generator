@@ -1,0 +1,18 @@
+
+if (response == null) {
+    throw new ApiConnectionException(
+    "{{baseName}} creation failed: Unable to connect to server"
+    );
+} else if (!TokenRestClient.SUCCESS.test(response.getStatusCode())) {
+    RestException restException = JsonUtil.fromJson(
+        response.getStream(),
+        RestException.class
+    );
+    if (restException == null) {
+        throw new ApiException(
+            "Server Error, no content",
+            response.getStatusCode()
+        );
+    }
+    throw new ApiException(restException);
+}

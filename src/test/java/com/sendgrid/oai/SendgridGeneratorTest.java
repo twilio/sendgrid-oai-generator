@@ -1,6 +1,7 @@
 package com.sendgrid.oai;
 
 import com.sendgrid.oai.constants.EnumConstants.Generator;
+import com.sendgrid.oai.java.SendgridJavaGenerator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -36,8 +37,16 @@ public class SendgridGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        final String pathname = "examples/spec/tsg_domain_authentication.yaml";
-        //final String pathname = "/Users/sbansla/Documents/code/twilio-oai-generator/examples/spec/twilio_api_v2010.yaml";
+        //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_mail_v3.yaml";
+       //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_mail_v3.yaml";
+      // final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_alerts_v3.yaml";
+        
+        
+        // spec to test for add title
+        //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_account_provisioning_v3.yaml";
+        // test for enum
+        final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_subusers_v3.yaml";
+        
         File filesList[];
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
@@ -54,6 +63,7 @@ public class SendgridGeneratorTest {
                     .addGlobalProperty("apiTests", "false")
                     .addGlobalProperty("apiDocs", "false");
             final ClientOptInput clientOptInput = configurator.toClientOptInput();
+            SendgridJavaGenerator javaGenerator = new SendgridJavaGenerator();
             DefaultGenerator generator = new DefaultGenerator();
             final List<File> output = generator.opts(clientOptInput).generate();
             assertFalse(output.isEmpty());

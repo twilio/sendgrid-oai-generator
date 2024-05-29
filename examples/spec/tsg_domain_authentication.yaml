@@ -26,16 +26,39 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-   # identifier: Apache
+    identifier: Apache
   version: v3
 servers:
 - url: https://api.sendgrid.com
   description: The Twilio SendGrid v3 API
 paths:
-  /v3/whitelabel/dns/email:
+  /v3/whitelabel/dns/{dns}/email/{SID}:
     post:
       operationId: CreateWhitelabelDnsEmail
       summary: Email DNS records to a co-worker
+      tags:
+        - email
+      parameters:
+        - name: SID
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: dns
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: domain
+          in: query
+          description: Search for authenticated domains.
+          schema:
+            type: string
+        - name: visit
+          in: header
+          description: Visit Test
+          schema:
+            type: string
       description: "**This endpoint is used to share DNS records with a colleagues**\n\
         \nUse this endpoint to send SendGrid-generated DNS record information to a\
         \ co-worker so they can enter it into your DNS provider to validate your domain\
@@ -58,10 +81,10 @@ paths:
             schema:
               type: object
               properties:
-                link_id:
-                  type: integer
-                  minimum: 0
-                  description: The ID of the branded link.
+                authenticationActions:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/authenticationAction'
                 domain_id:
                   type: integer
                   minimum: 0
@@ -688,7 +711,7 @@ paths:
                     - message: internal error getting TXT
   /v3/whitelabel/domains/default:
     get:
-      operationId: GetWhitelabelDomainsDefault
+      operationId: ListWhitelabelDomainsDefault
       summary: Get the default authentication
       tags:
       - default
@@ -718,7 +741,7 @@ paths:
           $ref: '#/components/responses/DomainAuthentication200'
   /v3/whitelabel/domains/subuser:
     get:
-      operationId: GetWhitelabelDomainsSubuser
+      operationId: ListWhitelabelDomainsSubuser
       summary: List the authenticated domain associated with the given user.
       tags:
       - subuser
@@ -811,6 +834,21 @@ paths:
                 type: object
 components:
   schemas:
+    authenticationActionType:
+      type: string
+      enum:
+        - COPY_CODE
+    authenticationAction:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          $ref: '#/components/schemas/authenticationActionType'
+        copy_code_text:
+          type: string
+      required:
+        - type
+        - copy_code_text
     AuthenticatedDomain:
       title: Domain Authentication - Mandatory Subdomain
       type: object
@@ -1151,63 +1189,6 @@ components:
                     type: integer
                     description: A Unix epoch timestamp representing the last time
                       of a validation attempt.
-            example:
-            - id: 1
-              user_id: 7
-              subdomain: mail
-              domain: example.com
-              username: jane@example.com
-              ips:
-              - 192.168.1.1
-              - 192.168.1.2
-              custom_spf: true
-              default: true
-              legacy: false
-              automatic_security: true
-              valid: true
-              dns:
-                mail_cname:
-                  valid: true
-                  type: cname
-                  host: mail.example.com
-                  data: u7.wl.sendgrid.net
-                dkim1:
-                  valid: true
-                  type: cname
-                  host: s1._domainkey.example.com
-                  data: s1._domainkey.u7.wl.sendgrid.net
-                dkim2:
-                  valid: true
-                  type: cname
-                  host: s2._domainkey.example.com
-                  data: s2._domainkey.u7.wl.sendgrid.net
-            - id: 2
-              user_id: 8
-              subdomain: new
-              domain: example2.com
-              username: john@example2.com
-              ips: []
-              custom_spf: false
-              default: true
-              legacy: false
-              automatic_security: true
-              valid: false
-              dns:
-                mail_cname:
-                  valid: false
-                  type: mx
-                  host: news.example2.com
-                  data: sendgrid.net
-                dkim1:
-                  valid: false
-                  type: txt
-                  host: example2.com
-                  data: k=rsa; t=s; p=publicKey
-                dkim2:
-                  valid: false
-                  type: txt
-                  host: example2.com
-                  data: k=rsa; t=s p=publicKey
           examples:
             response:
               value:

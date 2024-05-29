@@ -3,20 +3,26 @@ package com.sendgrid.oai.java;
 import com.sendgrid.oai.common.DirectoryStructureService;
 import com.sendgrid.oai.common.TwilioCodegenAdapter;
 import com.sendgrid.oai.constants.EnumConstants;
+import com.sendgrid.oai.modelprocessor.JavaModelProcessor;
+import com.sendgrid.oai.resolver.JavaEnumResolver;
 import com.sendgrid.oai.template.IApiActionTemplate;
 import com.sendgrid.oai.template.JavaApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
-import org.openapitools.codegen.CodegenModel;
+import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.JavaClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
-import org.openapitools.codegen.model.OperationMap;
 import org.openapitools.codegen.model.OperationsMap;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class SendgridJavaGenerator extends JavaClientCodegen {
+
+    JavaGlobalCache<String, Object> cache = JavaGlobalCache.getInstance();
 
     private final DirectoryStructureService directoryStructureService = new DirectoryStructureService(
             additionalProperties);
@@ -32,6 +38,8 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         sourceFolder = "";
         apiTemplateFiles().clear();
         apiTemplateFiles().put("api.mustache", ".java");
+        apiTemplateFiles().put("creator.mustache", "Creator.java");
+        apiTemplateFiles().put("model.mustache", "Model.java");
         //modelTemplateFiles().put("model.mustache", ".java");
         //apiTemplateFiles().put("model.mustache", ".java");
     }
@@ -39,6 +47,8 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
     @Override
     public void processOpts() {
         super.processOpts();
+        cache.clear();
+        cache.putValue("initSchemas", new LinkedHashMap<>(openAPI.getComponents().getSchemas()));
         setTemplateDir("src/main/resources/sendgrid-java");
         setTemplateDir("sendgrid-java");
         setApiNameSuffix("");
@@ -65,6 +75,7 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         twilioCodegen.setOutputDir("api", "v3");
         //directoryStructureService.clearTag(openAPI);
         //directoryStructureService.configure(openAPI);
+        this.openAPI = openAPI;
     }
 
     public String toApiFilename(String name) {
@@ -74,23 +85,36 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
-        ((OperationMap) results.get("operations")).put("classname", "SomeValue");
-        results.put("resources", "somaval");
+//        ((OperationMap) results.get("operations")).put("classname", "SomeValue");
+//        results.put("resources", "somaval");
+        JavaApiResource javaApiResource = processCodegenOperations(results.getOperations().getOperation());
+        
+        results.put("resources", javaApiResource);
         return results;
+    }
+
+    public void generateModels(List<File> files, List<ModelMap> allModels, List<String> unusedModels) {
+        System.out.println("Inside generate Models");
+    }
+    // Operations are grouped based in tag applied to it.
+    private JavaApiResource processCodegenOperations(final List<CodegenOperation> operations) {
+        System.out.println("---------- Operation List ------------");
+        for (CodegenOperation operation: operations) {
+            System.out.println(operation.path);
+            System.out.println(operation.operationId);
+        }
+        JavaOperationProcessor operationProcessor = new JavaOperationProcessor();
+        JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder((ArrayList<CodegenOperation>) operations, operationProcessor);
+        javaApiResourceBuilder.process();
+       return javaApiResourceBuilder.build();
     }
 
     // These models will be added by  DefaultGenerator.buildSupportFileBundle(...)
     @Override
-    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
-
-        for (Map.Entry<String, ModelsMap> entry : allModels.entrySet()) {
-            ModelsMap modelsMap = entry.getValue();
-            List<ModelMap> modelMaps = modelsMap.getModels();
-            for (ModelMap modelMap : modelMaps) {
-                CodegenModel codegenModel = modelMap.getModel();
-                //System.out.println(codegenModel);
-            }
-        }
+    public Map<String, ModelsMap> postProcessAllModels(Map<String, ModelsMap> allModels) {
+        JavaModelProcessor javaModelProcessor = new JavaModelProcessor(openAPI, allModels);
+        javaModelProcessor.generateEnums(allModels);
+        cache.put("allModels", allModels);
         return super.postProcessAllModels(allModels);
     }
 

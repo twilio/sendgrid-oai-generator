@@ -20,7 +20,7 @@ public class JavaModelProcessor {
     }
 
     public void generateEnums(final Map<String, ModelsMap> allModels) {
-        
+        System.out.println(allModels);
     }
 
     private void processFileName(Map<String, ModelsMap> tempModels) {

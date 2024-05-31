@@ -1,1 +1,19 @@
-# This is Enum
+public enum {{classname}} {
+{{#allowableValues}}{{#enumVars}}
+    {{name}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
+{{/enumVars}}{{/allowableValues}}
+    private final String value;
+
+    private {{classname}}(final String value) {
+        this.value = value;
+    }
+    public String toString() {
+        return value;
+    }
+
+    @JsonCreator
+    public static {{classname}} fromString(final String value) {
+        return CustomDeserializer.enum(value, {{classname}}.values());
+    }
+
+}

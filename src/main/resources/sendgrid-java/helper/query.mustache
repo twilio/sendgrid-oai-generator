@@ -1,8 +1,8 @@
 {{#vendorExtensions.has-queryParams}}
     
-    private void addQueryParam(Request.Builder builder) {
+    private void addQueryParams(Request.Builder builder) {
     {{#queryParams}}
-        builder.addQueryParams("{{baseName}}", {{paramName}}.toString());
+        builder.addQueryParam("{{baseName}}", {{paramName}}.toString());
     {{/queryParams}}
 
     }

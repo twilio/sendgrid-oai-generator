@@ -5,8 +5,9 @@ public class {{classname}} {
     @JsonProperty("{{name}}")
     @Getter
     @Setter
-    private final {{{datatype}}} {{name}};
+    private {{{datatype}}} {{name}};
 {{/vars}}
+public {{classname}} (){}
 private {{classname}}(Builder builder) {
 {{#vars}}
     this.{{name}} = builder.{{name}};

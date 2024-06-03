@@ -1,48 +1,29 @@
 {{#resources}}
 {{>licenseInfo}}
 package {{package}};
-
+import com.sendgrid.util.Matcher;
 
 {{#operations}}
 {{#vendorExtensions.x-create-operation}}
 @RequiredArgsConstructor
 public class {{classname}}Creator {
-{{#pathParams}}
-    private final {{{dataType}}} {{paramName}};
-{{/pathParams}}
-{{#queryParams}}
-    {{#required}}
-    private final {{{dataType}}} {{paramName}};
-    {{/required}}
-    {{^required}}
-    private {{{dataType}}} {{paramName}};
-    {{/required}}
-{{/queryParams}}
-{{#headerParams}}
-    {{#required}}
-    private final {{{dataType}}} {{paramName}};
-    {{/required}}
-    {{^required}}
-    private {{{dataType}}} {{paramName}};
-    {{/required}}
-{{/headerParams}}
-{{#bodyParams}}
-    private final {{{dataType}}} {{paramName}};
-{{/bodyParams}}
+{{>helper/createinstancevariables}}
     
-    public {{{vendorExtensions.x-success-datatype}}} create(final SendgridRestClient client) {
+    public {{{vendorExtensions.x-success-datatype}}} send(final TokenRestClient client) {
         String path = "{{path}}";
-        Request request = new Request.Builder(HttpMethod.{{httpMethod}}, path)
+        Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path)
             {{#pathParams}}
-                .addPathParam("{{baseName}}", {{paramName}}.toString())
-            {{/pathParams}}
-                .build();
+                .addPathParams("{{baseName}}", {{paramName}}.toString())
+            {{/pathParams}};
     {{#vendorExtensions.has-queryParams}}
         addQueryParam(builder);
     {{/vendorExtensions.has-queryParams}}
     {{#vendorExtensions.has-headerParams}}
-        addHeaderParam(builder);
+        addHeaderParams(builder);
     {{/vendorExtensions.has-headerParams}}
+    {{#vendorExtensions.has-body}}
+        addBody(builder);
+    {{/vendorExtensions.has-body}}
         Request request = builder.build();
         Response response = client.request(request);
         {{>helper/response_error_handling}}

@@ -1,5 +1,6 @@
 package com.sendgrid.oai.common;
 
+import com.sendgrid.oai.constants.ApplicationConstants;
 import com.sendgrid.oai.constants.EnumConstants;
 import com.sendgrid.oai.constants.EnumConstants.QueryParams;
 import com.sendgrid.oai.constants.EnumConstants.XOperation;
@@ -26,7 +27,7 @@ public class OperationProcessor {
 
     public OperationProcessor pathParams() {
         if (codegenOperation.pathParams != null && !codegenOperation.pathParams.isEmpty()) {
-            codegenOperation.vendorExtensions.put("has-pathParams", true);
+            codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_PATH_PARAMS, true);
         }
         return this;
     }
@@ -39,7 +40,7 @@ public class OperationProcessor {
          * Customer will build compound query, encode it and pass it as a query parameter in query field.
          */
         if (codegenOperation.queryParams != null && !codegenOperation.queryParams.isEmpty()) {
-            codegenOperation.vendorExtensions.put("has-queryParams", true);
+            codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_QUERY_PARAMS, true);
             boolean isRemoved = codegenOperation.queryParams.removeIf(s -> !s.paramName.equals(QueryParams.OFFSET.getValue()) 
                     && !s.paramName.equals(QueryParams.LIMIT.getValue()));
             if (isRemoved) {
@@ -56,7 +57,7 @@ public class OperationProcessor {
 
     public OperationProcessor headerParams() {
         if (codegenOperation.headerParams != null && !codegenOperation.headerParams.isEmpty()) {
-            codegenOperation.vendorExtensions.put("has-headerParams", true);
+            codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_HEADER_PARAMS, true);
         }
         return this;
     }
@@ -66,7 +67,7 @@ public class OperationProcessor {
         // test if properties are nested
         // test if properties are direct nested and ref nested
         if (codegenOperation.bodyParams != null && !codegenOperation.bodyParams.isEmpty()) {
-            codegenOperation.vendorExtensions.put("has-body", true);
+            codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_BODY, true);
         }
         return this;
     }
@@ -114,7 +115,7 @@ public class OperationProcessor {
         
         for (CodegenResponse codegenResponse: codegenOperation.responses) {
             if (codegenResponse.is2xx) {
-                codegenOperation.vendorExtensions.put("x-success-datatype", codegenResponse.dataType);
+                codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, codegenResponse.dataType);
             }
             //getMappedResponse(codegenResponse);
         }

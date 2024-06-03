@@ -1,9 +1,9 @@
 {{#vendorExtensions.has-headerParams}}
     
-    private void addHeaderParam(Request.Builder builder) {
+    private void addHeaderParams(Request.Builder builder) {
     {{#headerParams}}
         if ({{paramName}} != null) {
-            builder.addHeader("{{baseName}}", {{paramName}}.toString());
+            builder.addHeaderParam("{{baseName}}", {{paramName}}.toString());
         }
     {{/headerParams}}
     

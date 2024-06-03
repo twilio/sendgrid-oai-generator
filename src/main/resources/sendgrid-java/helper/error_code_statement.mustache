@@ -1,0 +1,7 @@
+if (Matcher.matches(Integer.toString(statusCode) ,"{{code}}")) {
+    {{dataType}} error = JsonUtil.fromJson(
+            response.getStream(),
+            {{dataType}}.class
+        );
+    throw new ApiErrorResponse(statusCode, null, error, response.getHeaders());
+}

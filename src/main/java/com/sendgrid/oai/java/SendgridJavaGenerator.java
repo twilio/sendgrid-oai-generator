@@ -15,7 +15,6 @@ import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,7 +103,7 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
             System.out.println(operation.operationId);
         }
         JavaOperationProcessor operationProcessor = new JavaOperationProcessor();
-        JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder((ArrayList<CodegenOperation>) operations, operationProcessor);
+        JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder(operations, operationProcessor);
         javaApiResourceBuilder.process();
        return javaApiResourceBuilder.build();
     }

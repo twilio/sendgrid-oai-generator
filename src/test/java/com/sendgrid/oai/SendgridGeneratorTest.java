@@ -45,7 +45,7 @@ public class SendgridGeneratorTest {
         // spec to test for add title
         //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_account_provisioning_v3.yaml";
         // test for enum
-        final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_account_provisioning_v3.yaml";
+        final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_mail_v3.yaml";
         
         
         File filesList[];

@@ -3,7 +3,7 @@
     private void addBody(final Request.Builder builder) {
     {{#bodyParams}}
         if ({{paramName}} != null) {
-        builder.body(JsonUtil.toJson({{paramName}}));
+        builder.addBody(JsonUtil.toJson({{paramName}}));
         }
     {{/bodyParams}}
     }

@@ -2,18 +2,15 @@ package com.sendgrid.oai.java;
 
 import com.sendgrid.oai.common.ApiResourceBuilder;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.model.ModelMap;
 
-import java.util.ArrayList;
-import java.util.Set;
+import java.util.List;
 
 public class JavaApiResourceBuilder extends ApiResourceBuilder {
 
-    final ArrayList<CodegenOperation> operations;
-    
-    Set<ModelMap> enums;
+    final List<CodegenOperation> operations;
+
     final JavaOperationProcessor javaOperationProcessor;
-    public JavaApiResourceBuilder(final ArrayList<CodegenOperation> operations, final JavaOperationProcessor operationProcessor) {
+    public JavaApiResourceBuilder(final List<CodegenOperation> operations, final JavaOperationProcessor operationProcessor) {
         super(operations, operationProcessor);
         this.operations = operations;
         this.javaOperationProcessor = operationProcessor;

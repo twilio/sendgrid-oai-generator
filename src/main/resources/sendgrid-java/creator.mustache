@@ -27,7 +27,13 @@ public class {{classname}}Creator {
         Request request = builder.build();
         Response response = client.request(request);
         {{>helper/response_error_handling}}
+    {{#vendorExtensions.x-void-datatype}}
+        return;
+    {{/vendorExtensions.x-void-datatype}}
+    {{^vendorExtensions.x-void-datatype}}
         return JsonUtil.fromJson(response.getStream(), {{vendorExtensions.x-success-datatype}}.class);
+    {{/vendorExtensions.x-void-datatype}}
+        
     }
     {{>helper/header}}
     {{>helper/query}}

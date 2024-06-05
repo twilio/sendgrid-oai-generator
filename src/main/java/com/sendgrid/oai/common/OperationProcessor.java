@@ -10,11 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenResponse;
-import org.openapitools.codegen.model.ModelMap;
-import org.openapitools.codegen.model.ModelsMap;
-
-import java.util.List;
-import java.util.Map;
 
 @RequiredArgsConstructor
 public class OperationProcessor {
@@ -73,7 +68,7 @@ public class OperationProcessor {
     }
 
     public OperationProcessor response() {
-        setVariableNaming();
+        setResponseDataType();
         return this;
     }
 
@@ -109,24 +104,18 @@ public class OperationProcessor {
         return this;
     }
 
-    private void setVariableNaming() {
+    private void setResponseDataType() {
         if (codegenOperation.responses == null || codegenOperation.responses.isEmpty()) return;
-        // baseType in response should match in allModels key.
-        
         for (CodegenResponse codegenResponse: codegenOperation.responses) {
             if (codegenResponse.is2xx) {
-                codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, codegenResponse.dataType);
+                if (codegenResponse.dataType == null) {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, "void");
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.VOID_DATATYPE, true);
+                } else {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, codegenResponse.dataType);
+                }
+                
             }
-            //getMappedResponse(codegenResponse);
-        }
-    }
-
-    private void getMappedResponse(CodegenResponse codegenResponse) {
-        Map<String, ModelsMap> allModels = (Map<String, ModelsMap>) cache.get("allModels");
-        if (allModels.containsKey(codegenResponse.baseType)) {
-            ModelsMap modelsMap = allModels.get(codegenResponse.baseType);
-            List<ModelMap> modelMaps = modelsMap.getModels();
-            codegenResponse.vendorExtensions.put("x-name", true);
         }
     }
 }

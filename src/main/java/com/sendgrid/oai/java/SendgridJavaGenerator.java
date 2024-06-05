@@ -14,7 +14,6 @@ import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
 
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +35,8 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         sourceFolder = "";
         apiTemplateFiles().clear();
-        apiTemplateFiles().put("api.mustache", ".java");
-        apiTemplateFiles().put("creator.mustache", "Creator.java");
-        apiTemplateFiles().put("model.mustache", "Model.java");
-        //modelTemplateFiles().put("model.mustache", ".java");
-        //apiTemplateFiles().put("model.mustache", ".java");
+        apiTemplateFiles().put("creator.mustache", ".java");
+        apiTemplateFiles().put("creator.mustache", "ById.java");
     }
 
     @Override
@@ -84,24 +80,14 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
-//        ((OperationMap) results.get("operations")).put("classname", "SomeValue");
-//        results.put("resources", "somaval");
         JavaApiResource javaApiResource = processCodegenOperations(results.getOperations().getOperation());
-        
         results.put("resources", javaApiResource);
         return results;
     }
 
-    public void generateModels(List<File> files, List<ModelMap> allModels, List<String> unusedModels) {
-        System.out.println("Inside generate Models");
-    }
     // Operations are grouped based in tag applied to it.
     private JavaApiResource processCodegenOperations(final List<CodegenOperation> operations) {
         System.out.println("---------- Operation List ------------");
-        for (CodegenOperation operation: operations) {
-            System.out.println(operation.path);
-            System.out.println(operation.operationId);
-        }
         JavaOperationProcessor operationProcessor = new JavaOperationProcessor();
         JavaApiResourceBuilder javaApiResourceBuilder= new JavaApiResourceBuilder(operations, operationProcessor);
         javaApiResourceBuilder.process();

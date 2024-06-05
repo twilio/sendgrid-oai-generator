@@ -15,4 +15,7 @@ public class ApiResource {
     protected List<CodegenOperation> operations;
     protected boolean hasPagination;
 
+    public ApiResource(ApiResourceBuilder apiResourceBuilder) {
+        this.operations = apiResourceBuilder.operations;
+    }
 }

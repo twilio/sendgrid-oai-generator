@@ -1,27 +1,45 @@
 package com.sendgrid.oai.common;
 
+import lombok.RequiredArgsConstructor;
+import org.openapitools.codegen.CodegenOperation;
+
+import java.util.List;
+
+@RequiredArgsConstructor
 public class ApiResourceBuilder {
-    protected OperationBuilder operationBuilder;
+    final List<CodegenOperation> operations;
+    final OperationProcessor operationProcessor;
 
-    public ApiResourceBuilder() {
-        
-    }
-
-    public void process() {
+    public ApiResourceBuilder process() {
         processServer();
         processApiPath();
         processOperations();
+        return this;
     }
 
-    public void processServer() {
-
+    public ApiResourceBuilder processServer() {
+        return this;
     }
 
-    public void processApiPath() {
-
+    public ApiResourceBuilder processApiPath() {
+        return this;
     }
 
-    public void processOperations() {
+    public ApiResourceBuilder processOperations() {
+        for (CodegenOperation operation: operations) {
+            operationProcessor.setCodegenOperation(operation);
+            operationProcessor
+                    .operationId()
+                    .pathParams()
+                    .queryParams()
+                    .headerParams()
+                    .body()
+                    .response();
+        }
+        return this;
+    }
 
+    public ApiResource build() {
+        return new ApiResource(this);
     }
 }

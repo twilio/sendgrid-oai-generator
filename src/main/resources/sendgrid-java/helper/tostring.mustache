@@ -1,0 +1,8 @@
+    @Override
+    public String toString() {
+        StringJoiner joiner = new StringJoiner(", ", {{classname}}.class.getSimpleName() + "(", ")");
+    {{#vars}}
+        if ({{name}} != null) joiner.add("{{name}}=" + {{name}});
+    {{/vars}}
+        return joiner.toString();
+    }

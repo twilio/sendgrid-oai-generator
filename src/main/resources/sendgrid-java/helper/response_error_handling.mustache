@@ -1,0 +1,22 @@
+
+if (response == null) {
+    throw new ApiConnectionException(
+    "{{baseName}} creation failed: Unable to connect to server"
+    );
+} else if (!TokenRestClient.SUCCESS.test(response.getStatusCode())) {
+
+int statusCode = response.getStatusCode();
+{{#hasErrorResponseObject}}
+{{#responses}}
+    {{#is3xx}}
+        {{>helper/error_code_statement}}
+    {{/is3xx}}
+    {{#is4xx}}
+        {{>helper/error_code_statement}}
+    {{/is4xx}}
+    {{#is5xx}}
+        {{>helper/error_code_statement}}
+    {{/is5xx}}
+{{/responses}}
+{{/hasErrorResponseObject}}
+}

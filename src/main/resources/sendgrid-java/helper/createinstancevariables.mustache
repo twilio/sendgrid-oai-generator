@@ -1,0 +1,22 @@
+{{#pathParams}}
+    private final {{{dataType}}} {{paramName}};
+{{/pathParams}}
+{{#queryParams}}
+    {{#required}}
+    private final {{{dataType}}} {{paramName}};
+    {{/required}}
+    {{^required}}
+    private {{{dataType}}} {{paramName}};
+    {{/required}}
+{{/queryParams}}
+{{#headerParams}}
+    {{#required}}
+    private final {{{dataType}}} {{paramName}};
+    {{/required}}
+    {{^required}}
+    private {{{dataType}}} {{paramName}};
+    {{/required}}
+{{/headerParams}}
+{{#bodyParams}}
+    private final {{{dataType}}} {{paramName}};
+{{/bodyParams}}

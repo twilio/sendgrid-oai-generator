@@ -1,0 +1,10 @@
+{{#vendorExtensions.has-body}}
+    
+    private void addBody(final Request.Builder builder) {
+    {{#bodyParams}}
+        if ({{paramName}} != null) {
+        builder.addBody(JsonUtil.toJson({{paramName}}));
+        }
+    {{/bodyParams}}
+    }
+{{/vendorExtensions.has-body}}

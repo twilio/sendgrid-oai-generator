@@ -26,9 +26,7 @@ public class JavaApiActionTemplate extends AbstractApiActionTemplate {
                 "patch",
                 Arrays.asList("updater.mustache", "Updater.java"),
                 API_TEMPLATE,
-                Arrays.asList("api.mustache", ".java"),
-                MODELS,
-                Arrays.asList("model.mustache", "Model.java")
+                Arrays.asList("api.mustache", ".java")
         );
     }
 }

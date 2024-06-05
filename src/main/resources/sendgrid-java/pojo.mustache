@@ -1,0 +1,41 @@
+@ToString
+public class {{classname}} {
+{{#vars}}
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonProperty("{{name}}")
+    @Getter
+    @Setter
+    private {{{datatype}}} {{name}};
+{{/vars}}
+public {{classname}} (){}
+private {{classname}}(Builder builder) {
+{{#vars}}
+    this.{{name}} = builder.{{name}};
+{{/vars}}
+}
+
+// Builder class for constructing object
+public static class Builder {
+{{#vars}}
+    private {{{datatype}}} {{name}};
+{{/vars}}
+public Builder({{#requiredVars}} {{{datatype}}} {{name}} {{^-last}},{{/-last}}{{/requiredVars}}) {
+{{#requiredVars}}
+    this.{{name}} = {{name}};
+{{/requiredVars}}
+}
+{{#optionalVars}}
+    public Builder {{name}}({{{datatype}}} {{name}}) {
+    this.{{name}} = {{name}};
+    return this;
+    }
+{{/optionalVars}}
+public {{classname}} build() {
+return new {{classname}}(this);
+}
+
+}
+{{>helper/tostring}}
+
+}
+        

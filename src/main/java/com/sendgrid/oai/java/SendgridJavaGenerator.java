@@ -1,12 +1,10 @@
 package com.sendgrid.oai.java;
 
 import com.sendgrid.oai.common.DirectoryStructureService;
+import com.sendgrid.oai.common.TagGenerator;
 import com.sendgrid.oai.common.TwilioCodegenAdapter;
 import com.sendgrid.oai.constants.EnumConstants;
 import com.sendgrid.oai.modelprocessor.JavaModelProcessor;
-import com.sendgrid.oai.resolver.JavaEnumResolver;
-import com.sendgrid.oai.template.IApiActionTemplate;
-import com.sendgrid.oai.template.JavaApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.JavaClientCodegen;
@@ -26,17 +24,14 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
             additionalProperties);
     private final TwilioCodegenAdapter twilioCodegen;
 
-    private JavaEnumResolver javaEnumResolver = new JavaEnumResolver();
-    private JavaCodegenResolver javaCodegenResolver = new JavaCodegenResolver(javaEnumResolver);
-    private final IApiActionTemplate apiActionTemplate = new JavaApiActionTemplate(this);
+    private final TagGenerator tagGenerator = new TagGenerator();
 
     public SendgridJavaGenerator() {
         super();
         twilioCodegen = new TwilioCodegenAdapter(this, getName());
         sourceFolder = "";
         apiTemplateFiles().clear();
-        apiTemplateFiles().put("creator.mustache", ".java");
-        apiTemplateFiles().put("creator.mustache", "ById.java");
+        apiTemplateFiles().put("api.mustache", ".java");
     }
 
     @Override
@@ -51,6 +46,7 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         setEnsureUniqueParams(false);
         //supportingFiles().clear();
         twilioCodegen.processOpts();
+        
     }
 
     @Override
@@ -68,8 +64,7 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         twilioCodegen.setDomain("api");
         twilioCodegen.setVersion("v3");
         twilioCodegen.setOutputDir("api", "v3");
-        //directoryStructureService.clearTag(openAPI);
-        //directoryStructureService.configure(openAPI);
+        tagGenerator.updateOperationTags(openAPI);
         this.openAPI = openAPI;
     }
 
@@ -85,7 +80,7 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
         return results;
     }
 
-    // Operations are grouped based in tag applied to it.
+    // Operations are grouped based in tag applied to it in processOpenAPI() method.
     private JavaApiResource processCodegenOperations(final List<CodegenOperation> operations) {
         System.out.println("---------- Operation List ------------");
         JavaOperationProcessor operationProcessor = new JavaOperationProcessor();

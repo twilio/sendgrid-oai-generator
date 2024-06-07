@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class JavaOperationProcessor extends OperationProcessor {
     private CodegenOperation codegenOperation;
-    JavaGlobalCache<String, Object> cache = JavaGlobalCache.getInstance();
     
     JavaEnumResolver javaEnumResolver = new JavaEnumResolver();
 

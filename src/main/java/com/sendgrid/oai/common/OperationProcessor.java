@@ -3,9 +3,6 @@ package com.sendgrid.oai.common;
 import com.sendgrid.oai.constants.ApplicationConstants;
 import com.sendgrid.oai.constants.EnumConstants;
 import com.sendgrid.oai.constants.EnumConstants.QueryParams;
-import com.sendgrid.oai.constants.EnumConstants.XOperation;
-import com.sendgrid.oai.java.JavaGlobalCache;
-import com.sendgrid.oai.utils.Utility;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -14,7 +11,6 @@ import org.openapitools.codegen.CodegenResponse;
 @RequiredArgsConstructor
 public class OperationProcessor {
     private CodegenOperation codegenOperation;
-    JavaGlobalCache<String, Object> cache = JavaGlobalCache.getInstance();
 
     public void setCodegenOperation(CodegenOperation codegenOperation) {
         this.codegenOperation = codegenOperation;
@@ -71,36 +67,12 @@ public class OperationProcessor {
         setResponseDataType();
         return this;
     }
+    
+    public OperationProcessor fileName() {
+        return this;
+    }
 
     public OperationProcessor operationId() {
-        /*
-         * Identify operation
-         * 1. Combination of path and http method
-         * 2. TODO: If there is any exception use operationId (identified by extension)
-         */
-        boolean isInstancePath = Utility.isInstancePath(codegenOperation.path);
-        String httpMethod = codegenOperation.httpMethod;
-        String operationType = null;
-        switch (httpMethod.toUpperCase()) {
-            case "GET":
-                operationType = isInstancePath ? XOperation.FETCH.getValue() : XOperation.LIST.getValue();
-                break;
-            case "POST":
-                operationType = isInstancePath ? XOperation.UPDATE.getValue() : XOperation.CREATE.getValue();
-                break;
-            case "PUT":
-                operationType = isInstancePath ? XOperation.UPDATE.getValue() : null;
-                break;
-            case "DELETE":
-                operationType = isInstancePath ? XOperation.DELETE.getValue() : null;
-                break;
-            case "PATCH":
-                operationType = isInstancePath ? XOperation.PATCH.getValue() : null;
-                break;
-        }
-        if (operationType != null) {
-            codegenOperation.vendorExtensions.put(operationType, true);
-        }
         return this;
     }
 

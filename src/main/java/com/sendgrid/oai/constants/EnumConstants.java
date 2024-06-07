@@ -67,4 +67,22 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum MustacheLocation {
+        JAVA("sendgrid-java"),
+        CSHARP("sendgrid-csharp"),
+        GO("sendgrid-go");
+
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum BasePackage {
+        JAVA("com.sendgrid.rest");
+
+        private final String value;
+    }
 }

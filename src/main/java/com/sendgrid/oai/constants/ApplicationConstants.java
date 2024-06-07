@@ -5,9 +5,8 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ApplicationConstants {
-    public static final String CREATE_OPERATION = "x-is-create-operation";
-    public static final String LIST_OPERATION = "x-is-list-operation";
     public static final String SENDGRID_EXTENSION_NAME = "x-sendgrid";
+    public static final String LIBRARY_DIRECTORY = "libDirectory";
     public static final String HAS_PATH_PARAMS = "has-pathParams";
     public static final String HAS_HEADER_PARAMS = "has-headerParams";
     public static final String HAS_QUERY_PARAMS = "has-queryParams";
@@ -17,4 +16,6 @@ public class ApplicationConstants {
     public static final String FAILURE_DATATYPE = "x-failure-datatype";
     public static final String IS_SUCCESS = "true";
     public static final String IS_FAILURE = "true";
+    public static final String MOUNT_NAME = "mountName";
+    public static final String API_NAME_SUFFIX = "_by_id";
 }

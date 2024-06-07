@@ -3,7 +3,6 @@ package com.sendgrid.oai.common;
 import com.sendgrid.oai.constants.ApplicationConstants;
 import com.sendgrid.oai.constants.EnumConstants;
 import com.sendgrid.oai.constants.EnumConstants.QueryParams;
-import com.sendgrid.oai.java.JavaGlobalCache;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -12,7 +11,6 @@ import org.openapitools.codegen.CodegenResponse;
 @RequiredArgsConstructor
 public class OperationProcessor {
     private CodegenOperation codegenOperation;
-    JavaGlobalCache<String, Object> cache = JavaGlobalCache.getInstance();
 
     public void setCodegenOperation(CodegenOperation codegenOperation) {
         this.codegenOperation = codegenOperation;

@@ -1,14 +1,17 @@
 {{#resources}}
-    {{>licenseInfo}}
-    package {{package}};
-    import com.sendgrid.util.Matcher;
+{{>licenseInfo}}
+package {{package}};
+import com.sendgrid.util.Matcher;
+{{#imports}}
+import {{import}};
+{{/imports}}
 
-    {{#operations}}
-        @RequiredArgsConstructor
-        public class {{classname}} {
-        {{>helper/createinstancevariables}}
+{{#operations}}
+@RequiredArgsConstructor
+public class {{classname}} {
+{{>helper/createinstancevariables}}
 
-        public {{{vendorExtensions.x-success-datatype}}} send(final TokenRestClient client) {
+    public {{{vendorExtensions.x-success-datatype}}} send(final TokenRestClient client) {
         String path = "{{path}}";
         Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path)
         {{#pathParams}}
@@ -32,12 +35,11 @@
         {{^vendorExtensions.x-void-datatype}}
             return JsonUtil.fromJson(response.getStream(), {{vendorExtensions.x-success-datatype}}.class);
         {{/vendorExtensions.x-void-datatype}}
+    }
 
-        }
-        {{>helper/header}}
-        {{>helper/query}}
-        {{>helper/body}}
-
-        }
-    {{/operations}}
+    {{>helper/header}}
+    {{>helper/query}}
+    {{>helper/body}}
+}
+ {{/operations}}
 {{/resources}}

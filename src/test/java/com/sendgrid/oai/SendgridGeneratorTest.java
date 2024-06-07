@@ -1,7 +1,6 @@
 package com.sendgrid.oai;
 
 import com.sendgrid.oai.constants.EnumConstants.Generator;
-import com.sendgrid.oai.java.SendgridJavaGenerator;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.BeforeClass;
@@ -62,9 +61,9 @@ public class SendgridGeneratorTest {
                     .setOutputDir("codegen/" + generator.getValue())
                    // .setInlineSchemaNameDefaults(Map.of("arrayItemSuffix", ""))
                     .addGlobalProperty("apiTests", "false")
-                    .addGlobalProperty("apiDocs", "false");
+                    .addGlobalProperty("apiDocs", "false")
+                    .addGlobalProperty("local", "true");
             final ClientOptInput clientOptInput = configurator.toClientOptInput();
-            SendgridJavaGenerator javaGenerator = new SendgridJavaGenerator();
             DefaultGenerator generator = new DefaultGenerator();
             final List<File> output = generator.opts(clientOptInput).generate();
             assertFalse(output.isEmpty());

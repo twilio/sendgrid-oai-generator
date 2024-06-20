@@ -6,7 +6,6 @@ import com.sendgrid.oai.constants.EnumConstants.QueryParams;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenResponse;
 
 @RequiredArgsConstructor
 public class OperationProcessor {
@@ -64,7 +63,6 @@ public class OperationProcessor {
     }
 
     public OperationProcessor response() {
-        setResponseDataType();
         return this;
     }
     
@@ -75,19 +73,5 @@ public class OperationProcessor {
     public OperationProcessor operationId() {
         return this;
     }
-
-    private void setResponseDataType() {
-        if (codegenOperation.responses == null || codegenOperation.responses.isEmpty()) return;
-        for (CodegenResponse codegenResponse: codegenOperation.responses) {
-            if (codegenResponse.is2xx) {
-                if (codegenResponse.dataType == null) {
-                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, "void");
-                    codegenOperation.vendorExtensions.put(ApplicationConstants.VOID_DATATYPE, true);
-                } else {
-                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, codegenResponse.dataType);
-                }
-                
-            }
-        }
-    }
+    
 }

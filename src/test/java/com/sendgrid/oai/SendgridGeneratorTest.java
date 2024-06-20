@@ -36,17 +36,10 @@ public class SendgridGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_mail_v3.yaml";
-       //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_mail_v3.yaml";
-      // final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_alerts_v3.yaml";
-        
-        
-        // spec to test for add title
-        //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_account_provisioning_v3.yaml";
-        // test for enum
-        final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_mail_v3.yaml";
-        
-        
+        //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_mail_v3.yaml";
+        final String pathname = "examples/spec/tsg_student_api_v3.yaml";
+        //final String pathname = "/Users/sbansla/Documents/code/sendgrid-oas/spec/tsg_lmc_senders_v3.yaml";
+
         File filesList[];
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {

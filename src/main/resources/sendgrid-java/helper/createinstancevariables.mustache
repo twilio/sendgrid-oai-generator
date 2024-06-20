@@ -6,6 +6,7 @@
     private final {{{dataType}}} {{paramName}};
     {{/required}}
     {{^required}}
+    @Setter
     private {{{dataType}}} {{paramName}};
     {{/required}}
 {{/queryParams}}
@@ -14,9 +15,11 @@
     private final {{{dataType}}} {{paramName}};
     {{/required}}
     {{^required}}
+    @Setter
     private {{{dataType}}} {{paramName}};
     {{/required}}
 {{/headerParams}}
 {{#bodyParams}}
-    private final {{{dataType}}} {{paramName}};
+    @Setter
+    private {{{dataType}}} {{paramName}};
 {{/bodyParams}}

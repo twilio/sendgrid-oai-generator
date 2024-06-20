@@ -1,9 +1,11 @@
 package com.sendgrid.oai.java;
 
 import com.sendgrid.oai.common.OperationProcessor;
+import com.sendgrid.oai.constants.ApplicationConstants;
 import com.sendgrid.oai.constants.EnumConstants;
 import com.sendgrid.oai.resolver.JavaEnumResolver;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenResponse;
 
 import java.util.stream.Collectors;
 
@@ -62,12 +64,36 @@ public class JavaOperationProcessor extends OperationProcessor {
 
     public OperationProcessor response() {
         super.response();
+        setResponseDataType();
         return this;
     }
 
     public OperationProcessor operationId() {
         super.operationId();
         return this;
+    }
+
+    private void setResponseDataType() {
+        if (codegenOperation.responses == null || codegenOperation.responses.isEmpty()) return;
+        for (CodegenResponse codegenResponse: codegenOperation.responses) {
+            if (codegenResponse.is2xx) {
+                if (codegenResponse.dataType == null) {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, "Void");
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.VOID_DATATYPE, true);
+                } else {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, codegenResponse.dataType);
+                }
+            }
+            // Set Redirection as Success only when 2xx response not present.
+             else if (codegenResponse.is3xx) {
+                if (codegenResponse.dataType == null) {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, "Void");
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.VOID_DATATYPE, true);
+                } else {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_DATATYPE, codegenResponse.dataType);
+                }
+            }
+        }
     }
     
 }

@@ -4,6 +4,7 @@ import com.sendgrid.oai.constants.ApplicationConstants;
 import com.sendgrid.oai.utils.StringHelper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import org.openapitools.codegen.DefaultCodegen;
 
@@ -54,12 +55,18 @@ public abstract class ApiPackageGenerator {
 
     // Return library directory in snake_case
     public String getDirectory(final OpenAPI openAPI) {
-        if (openAPI.getInfo().getExtensions() == null) {
-            throw new RuntimeException(ApplicationConstants.LIBRARY_DIRECTORY + " is required");
+        Info info = openAPI.getInfo();
+        if (info == null || info.getExtensions() == null
+                || info.getExtensions().get(ApplicationConstants.SENDGRID_EXTENSION_NAME) == null) {
+            throw new RuntimeException(ApplicationConstants.INFO_LIBRARY_PACKAGE + " is required in OpenAPI specification");
         }
-        String directory = (String)((LinkedHashMap)openAPI.getInfo().getExtensions()
-                .get(ApplicationConstants.SENDGRID_EXTENSION_NAME))
-                .get(ApplicationConstants.LIBRARY_DIRECTORY);
+        
+        LinkedHashMap<String, String> sendgridExtension = (LinkedHashMap)info.getExtensions().get(ApplicationConstants.SENDGRID_EXTENSION_NAME);
+        if (sendgridExtension.get(ApplicationConstants.LIBRARY_PACKAGE) == null) {
+            throw new RuntimeException(ApplicationConstants.INFO_LIBRARY_PACKAGE + " is required in OpenAPI specification");
+        }
+        
+        String directory = sendgridExtension.get(ApplicationConstants.LIBRARY_PACKAGE);
         return StringHelper.toSnakeCase(directory);
     }
 

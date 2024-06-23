@@ -13,7 +13,10 @@ public class ApplicationConstants {
     public static final String HAS_QUERY_PARAMS = "has-queryParams";
     public static final String HAS_BODY = "has-body";
     public static final String SUCCESS_DATATYPE = "x-success-datatype";
+    public static final String SUCCESS_RETURN_TYPE = "x-success-return-type";
+    public static final String SUCCESS_JSON_TYPE = "x-success-json-type";
     public static final String VOID_DATATYPE = "x-void-datatype";
+    public static final String SUCCESS_LIST_DATATYPE = "x-list-datatype";
     public static final String FAILURE_DATATYPE = "x-failure-datatype";
     public static final String IS_SUCCESS = "true";
     public static final String IS_FAILURE = "true";

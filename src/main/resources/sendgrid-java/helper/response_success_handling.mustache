@@ -1,0 +1,20 @@
+{{#vendorExtensions.x-void-datatype}}
+    return new ApiResponse(statusCode, response.getHeaders());
+{{/vendorExtensions.x-void-datatype}}
+{{^vendorExtensions.x-void-datatype}}
+{{#vendorExtensions.x-list-datatype}}
+    TypeReference listTypeReference = new TypeReference<{{{vendorExtensions.x-success-return-type}}}>() {};
+    return new ApiResponse(
+        statusCode,
+        JsonUtil.fromJson(response.getStream(), listTypeReference),
+        response.getHeaders()
+    );
+{{/vendorExtensions.x-list-datatype}}
+{{^vendorExtensions.x-list-datatype}}
+    return new ApiResponse(
+        statusCode,
+        JsonUtil.fromJson(response.getStream(), {{{vendorExtensions.x-success-json-type}}}.class),
+        response.getHeaders()
+    );
+{{/vendorExtensions.x-list-datatype}}
+{{/vendorExtensions.x-void-datatype}}

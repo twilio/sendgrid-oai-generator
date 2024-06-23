@@ -2,6 +2,7 @@
 {{>licenseInfo}}
 package {{package}};
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.sendgrid.constant.ApplicationConstants;
 import com.sendgrid.exception.ApiConnectionException;
 import com.sendgrid.exception.ApiErrorResponse;
@@ -14,6 +15,8 @@ import com.sendgrid.http.Response;
 import com.sendgrid.http.ApiKeyRestClient;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import java.util.List;
+
 
 {{#imports}}
 import {{import}};
@@ -25,7 +28,7 @@ import {{import}};
 public class {{classname}} {
 {{>helper/createinstancevariables}}
 
-    public ApiResponse<{{{vendorExtensions.x-success-datatype}}}> send(final ApiKeyRestClient client) {
+    public ApiResponse<{{{vendorExtensions.x-success-return-type}}}> send(final ApiKeyRestClient client) {
         String path = "{{path}}";
         Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path)
         {{#pathParams}}
@@ -44,16 +47,7 @@ public class {{classname}} {
         Response response = client.request(request);
         {{>helper/response_error_handling}}
             int statusCode = response.getStatusCode();
-        {{#vendorExtensions.x-void-datatype}}
-            return new ApiResponse(statusCode, response.getHeaders());
-        {{/vendorExtensions.x-void-datatype}}
-        {{^vendorExtensions.x-void-datatype}}
-            return new ApiResponse(
-                statusCode,
-                JsonUtil.fromJson(response.getStream(), {{vendorExtensions.x-success-datatype}}.class),
-                response.getHeaders()
-            );
-        {{/vendorExtensions.x-void-datatype}}
+        {{>helper/response_success_handling}}
     }
 
     {{>helper/header}}

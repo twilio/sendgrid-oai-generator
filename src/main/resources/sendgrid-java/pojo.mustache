@@ -3,7 +3,7 @@
 public class {{classname}} {
 {{#vars}}
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    @JsonProperty("{{name}}")
+    @JsonProperty("{{{baseName}}}")
     @Getter
     @Setter
     private {{{datatype}}} {{name}};

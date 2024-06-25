@@ -51,16 +51,6 @@ public class EnumConstants {
 
     @Getter
     @RequiredArgsConstructor
-    public enum QueryParams {
-        LIMIT("limit"),
-        OFFSET("offset"),
-        QUERY("query");
-
-        private final String value;
-    }
-
-    @Getter
-    @RequiredArgsConstructor
     public enum QueryDataType {
         JAVA("String"),
         CSHARP("string");

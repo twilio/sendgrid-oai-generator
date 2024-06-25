@@ -7,13 +7,18 @@ public enum {{classname}} {
     private {{classname}}(final String value) {
         this.value = value;
     }
+
+    @Override
+    @JsonValue
     public String toString() {
         return value;
     }
 
     @JsonCreator
-    public static {{classname}} fromString(final String value) {
-        return CustomDeserializer.enum(value, {{classname}}.values());
+    public static {{classname}} forValue(final String value) {
+        return Promoter.enumFromString(
+            value,
+            {{classname}}.values()
+        );
     }
-
 }

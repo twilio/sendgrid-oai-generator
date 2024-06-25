@@ -1,24 +1,41 @@
 {{#resources}}
 {{>licenseInfo}}
 package {{package}};
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.sendgrid.constant.ApplicationConstants;
+import com.sendgrid.exception.ApiConnectionException;
+import com.sendgrid.exception.ApiErrorResponse;
+import com.sendgrid.http.ApiResponse;
+import com.sendgrid.http.HttpMethod;
+import com.sendgrid.util.JsonUtil;
 import com.sendgrid.util.Matcher;
+import com.sendgrid.http.Request;
+import com.sendgrid.http.Response;
+import com.sendgrid.http.ApiKeyRestClient;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import java.util.List;
+
+
 {{#imports}}
 import {{import}};
 {{/imports}}
+
 
 {{#operations}}
 @RequiredArgsConstructor
 public class {{classname}} {
 {{>helper/createinstancevariables}}
 
-    public {{{vendorExtensions.x-success-datatype}}} send(final TokenRestClient client) {
+    public ApiResponse<{{{vendorExtensions.x-success-return-type}}}> send(final ApiKeyRestClient client) {
         String path = "{{path}}";
         Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path)
         {{#pathParams}}
-            .addPathParams("{{baseName}}", {{paramName}}.toString())
+            .addPathParam("{{baseName}}", {{paramName}}.toString())
         {{/pathParams}};
         {{#vendorExtensions.has-queryParams}}
-            addQueryParam(builder);
+            addQueryParams(builder);
         {{/vendorExtensions.has-queryParams}}
         {{#vendorExtensions.has-headerParams}}
             addHeaderParams(builder);
@@ -29,12 +46,8 @@ public class {{classname}} {
         Request request = builder.build();
         Response response = client.request(request);
         {{>helper/response_error_handling}}
-        {{#vendorExtensions.x-void-datatype}}
-            return;
-        {{/vendorExtensions.x-void-datatype}}
-        {{^vendorExtensions.x-void-datatype}}
-            return JsonUtil.fromJson(response.getStream(), {{vendorExtensions.x-success-datatype}}.class);
-        {{/vendorExtensions.x-void-datatype}}
+            int statusCode = response.getStatusCode();
+        {{>helper/response_success_handling}}
     }
 
     {{>helper/header}}

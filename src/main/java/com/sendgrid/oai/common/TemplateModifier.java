@@ -26,4 +26,8 @@ public class TemplateModifier {
     public void removeReservedWords() {
         
     }
+    
+    public void removeImportMapping() {
+        
+    }
 }

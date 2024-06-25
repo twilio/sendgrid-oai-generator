@@ -15,6 +15,7 @@ import org.openapitools.codegen.model.OperationsMap;
 import java.util.List;
 import java.util.Map;
 
+
 public class SendgridJavaGenerator extends JavaClientCodegen {
     private final ApiPackageGenerator apiPackageGenerator;
     private final TagGenerator tagGenerator = new TagGenerator();
@@ -62,14 +63,13 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
 
     // Operations are grouped based in tag applied to it in processOpenAPI() method.
     private JavaApiResource processCodegenOperations(final List<CodegenOperation> operations) {
-        System.out.println("---------- Operation List ------------");
         JavaOperationProcessor operationProcessor = new JavaOperationProcessor();
         JavaApiResourceBuilder javaApiResourceBuilder = new JavaApiResourceBuilder(operations, operationProcessor);
         javaApiResourceBuilder.process();
         return javaApiResourceBuilder.build();
     }
 
-    // These models will be added by  DefaultGenerator.buildSupportFileBundle(...)
+     //These models will be added by  DefaultGenerator.buildSupportFileBundle(...)
     @Override
     public Map<String, ModelsMap> postProcessAllModels(Map<String, ModelsMap> allModels) {
         return super.postProcessAllModels(allModels);
@@ -77,6 +77,7 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String getName() {
+        Integer i = 10;
         return EnumConstants.Generator.SENDGRID_JAVA.getValue();
     }
 

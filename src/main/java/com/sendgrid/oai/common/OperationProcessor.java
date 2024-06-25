@@ -1,11 +1,8 @@
 package com.sendgrid.oai.common;
 
 import com.sendgrid.oai.constants.ApplicationConstants;
-import com.sendgrid.oai.constants.EnumConstants;
-import com.sendgrid.oai.constants.EnumConstants.QueryParams;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
 
 @RequiredArgsConstructor
 public class OperationProcessor {
@@ -23,26 +20,28 @@ public class OperationProcessor {
     }
 
     public OperationProcessor queryParams() {
-        /*
-         * Sendgrid follows RQL for query parameters.
-         * If query parameter is limit or offset it is passed as standard query parameter.
-         * If query parameter is other than limit or offset then use 'query' field for query parameter
-         * Customer will build compound query, encode it and pass it as a query parameter in query field.
-         */
         if (codegenOperation.queryParams != null && !codegenOperation.queryParams.isEmpty()) {
             codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_QUERY_PARAMS, true);
-            boolean isRemoved = codegenOperation.queryParams.removeIf(s -> !s.paramName.equals(QueryParams.OFFSET.getValue()) 
-                    && !s.paramName.equals(QueryParams.LIMIT.getValue()));
-            if (isRemoved) {
-                CodegenParameter query = new CodegenParameter();
-                query.paramName = QueryParams.QUERY.getValue();
-                query.baseName = QueryParams.QUERY.getValue();
-                query.dataType = EnumConstants.QueryDataType.JAVA.getValue();
-                codegenOperation.queryParams.add(query);
-            }
         }
-        
         return this;
+        /*
+         * Sendgrid follows RQL for query parameters.
+         * If query parameter is NonCompoundQueryParams it is passed as standard query parameter.
+         * If query parameter is other than NonCompoundQueryParams then use 'query' field for query parameter
+         * Customer will build compound query and pass it as a query parameter in query field.
+         */
+//        if (codegenOperation.queryParams != null && !codegenOperation.queryParams.isEmpty()) {
+//            codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_QUERY_PARAMS, true);
+//            boolean isRemoved = codegenOperation.queryParams.removeIf(s -> !s.paramName.equals(QueryParams.OFFSET.getValue()) 
+//                    && !s.paramName.equals(QueryParams.LIMIT.getValue()));
+//            if (isRemoved) {
+//                CodegenParameter query = new CodegenParameter();
+//                query.paramName = QueryParams.QUERY.getValue();
+//                query.baseName = QueryParams.QUERY.getValue();
+//                query.dataType = EnumConstants.QueryDataType.JAVA.getValue();
+//                codegenOperation.queryParams.add(query);
+//            }
+//        }
     }
 
     public OperationProcessor headerParams() {

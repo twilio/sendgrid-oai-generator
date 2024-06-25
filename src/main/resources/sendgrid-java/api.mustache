@@ -4,8 +4,10 @@ package {{package}};
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sendgrid.constant.ApplicationConstants;
+import com.sendgrid.constant.Domains;
 import com.sendgrid.exception.ApiConnectionException;
 import com.sendgrid.exception.ApiErrorResponse;
+import com.sendgrid.exception.GenericApiError;
 import com.sendgrid.http.ApiResponse;
 import com.sendgrid.http.HttpMethod;
 import com.sendgrid.util.JsonUtil;
@@ -30,10 +32,11 @@ public class {{classname}} {
 
     public ApiResponse<{{{vendorExtensions.x-success-return-type}}}> send(final ApiKeyRestClient client) {
         String path = "{{path}}";
-        Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path)
+        Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path, Domains.API.toString())
         {{#pathParams}}
             .addPathParam("{{baseName}}", {{paramName}}.toString())
         {{/pathParams}};
+        builder.region(client.getRegion());
         {{#vendorExtensions.has-queryParams}}
             addQueryParams(builder);
         {{/vendorExtensions.has-queryParams}}

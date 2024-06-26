@@ -33,9 +33,7 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
 
 
 def generate(spec_folder: str, spec_files: List[str], output_path: str, language: str) -> None:
-    sub_dir = subdirectories.get(language, 'rest')
     parent_dir = Path(__file__).parent.parent
-    output_path = os.path.join(output_path, sub_dir)
     config_path = os.path.join(parent_dir, CONFIG_FOLDER, language)
 
     shutil.rmtree(config_path, ignore_errors=True)

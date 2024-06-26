@@ -1,0 +1,25 @@
+public enum {{classname}} {
+    {{#allowableValues}}{{#enumVars}}
+        {{name}}({{{value}}}){{^-last}},{{/-last}}{{#-last}};{{/-last}}
+    {{/enumVars}}{{/allowableValues}}
+    private final Integer value;
+
+    private {{classname}}(final Integer value) {
+        this.value = value;
+    }
+
+    @JsonValue
+    public Integer toValue() {
+        return value;
+    }
+
+    @JsonCreator
+    public static {{classname}} forValue(final Integer value) {
+        for ({{classname}} var : {{classname}}.values()) {
+            if (var.value == value) {
+                return var;
+            }
+        }
+        throw new IllegalArgumentException("Invalid value: " + value);
+    }
+}

@@ -1,0 +1,9 @@
+{{#vendorExtensions.has-pathParams}}
+    private void addPathParams(Request request) {
+    {{#pathParams}}
+        if ({{paramName}} != null) {
+            request.addPathParam("{{baseName}}", {{paramName}}.toString());
+        }
+    {{/pathParams}}
+    }
+{{/vendorExtensions.has-pathParams}}

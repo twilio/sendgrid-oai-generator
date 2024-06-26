@@ -14,4 +14,9 @@ int statusCode = response.getStatusCode();
         {{>helper/error_code_statement}}
     {{/is5xx}}
 {{/responses}}
+    GenericApiError error = JsonUtil.fromJson(
+        response.getStream(),
+        GenericApiError.class
+    );
+    throw new ApiErrorResponse(statusCode, null, error, response.getHeaders());
 }

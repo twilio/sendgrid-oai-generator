@@ -18,5 +18,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 {{#models}}{{#model}}
     {{^isEnum}}{{>pojo}} {{/isEnum}}
-    {{#isEnum}}{{>enum}}{{/isEnum}}
+    {{#isEnum}}{{#isString}}{{>enum}}{{/isString}}{{/isEnum}}
+    {{#isEnum}}{{#isInteger}}{{>enum_integer}}{{/isInteger}}{{/isEnum}}
 {{/model}}{{/models}}

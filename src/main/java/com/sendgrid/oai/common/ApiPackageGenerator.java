@@ -48,9 +48,16 @@ public abstract class ApiPackageGenerator {
     }
 
     public String getVersion(final OpenAPI openAPI) {
-        defaultCodegen.getInputSpec();
-        String version = defaultCodegen.getInputSpec().replaceAll(INPUT_SPEC_PATTERN, "${version}");
-        return StringHelper.toSnakeCase(version);
+        String fileName = defaultCodegen.getInputSpec();
+        int dotIndex = fileName.lastIndexOf('.');
+        if (dotIndex != -1) {
+            fileName = fileName.substring(0, dotIndex);
+        }
+        int underscoreIndex = fileName.lastIndexOf('_');
+        if (underscoreIndex != -1) {
+            return StringHelper.toSnakeCase(fileName.substring(underscoreIndex + 1));
+        }
+        throw new RuntimeException(fileName + " open api spec file name has invalid version");
     }
 
     // Return library directory in snake_case

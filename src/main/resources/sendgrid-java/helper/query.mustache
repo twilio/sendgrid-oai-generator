@@ -1,11 +1,10 @@
 {{#vendorExtensions.has-queryParams}}
     
-    private void addQueryParams(Request.Builder builder) {
+    private void addQueryParams(Request request) {
     {{#queryParams}}
         if ({{paramName}} != null) {
-            builder.addQueryParam("{{baseName}}", {{paramName}}.toString());
+            request.addQueryParam("{{baseName}}", {{paramName}}.toString());
         }
     {{/queryParams}}
-
     }
 {{/vendorExtensions.has-queryParams}}

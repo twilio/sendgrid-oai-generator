@@ -4,8 +4,10 @@ package {{package}};
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sendgrid.constant.ApplicationConstants;
+import com.sendgrid.constant.Domains;
 import com.sendgrid.exception.ApiConnectionException;
 import com.sendgrid.exception.ApiErrorResponse;
+import com.sendgrid.exception.GenericApiError;
 import com.sendgrid.http.ApiResponse;
 import com.sendgrid.http.HttpMethod;
 import com.sendgrid.util.JsonUtil;
@@ -30,26 +32,27 @@ public class {{classname}} {
 
     public ApiResponse<{{{vendorExtensions.x-success-return-type}}}> send(final ApiKeyRestClient client) {
         String path = "{{path}}";
-        Request.Builder builder = new Request.Builder(HttpMethod.{{httpMethod}}, path)
-        {{#pathParams}}
-            .addPathParam("{{baseName}}", {{paramName}}.toString())
-        {{/pathParams}};
+        Request request = new Request(HttpMethod.{{httpMethod}}, path, Domains.API.toString());
+        request.setRegion(client.getRegion());
+        {{#vendorExtensions.has-pathParams}}
+            addPathParams(request);
+        {{/vendorExtensions.has-pathParams}}
         {{#vendorExtensions.has-queryParams}}
-            addQueryParams(builder);
+            addQueryParams(request);
         {{/vendorExtensions.has-queryParams}}
         {{#vendorExtensions.has-headerParams}}
-            addHeaderParams(builder);
+            addHeaderParams(request);
         {{/vendorExtensions.has-headerParams}}
         {{#vendorExtensions.has-body}}
-            addBody(builder);
+            addBody(request);
         {{/vendorExtensions.has-body}}
-        Request request = builder.build();
         Response response = client.request(request);
         {{>helper/response_error_handling}}
             int statusCode = response.getStatusCode();
         {{>helper/response_success_handling}}
     }
 
+    {{>helper/path_param}}
     {{>helper/header}}
     {{>helper/query}}
     {{>helper/body}}

@@ -1,9 +1,9 @@
 {{#vendorExtensions.has-body}}
     
-    private void addBody(final Request.Builder builder) {
+    private void addBody(final Request request) {
     {{#bodyParams}}
         if ({{paramName}} != null) {
-        builder.addBody(JsonUtil.toJson({{paramName}}));
+            request.addBody(JsonUtil.toJson({{paramName}}));
         }
     {{/bodyParams}}
     }

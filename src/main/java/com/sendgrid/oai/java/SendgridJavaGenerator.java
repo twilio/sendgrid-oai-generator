@@ -77,7 +77,6 @@ public class SendgridJavaGenerator extends JavaClientCodegen {
 
     @Override
     public String getName() {
-        Integer i = 10;
         return EnumConstants.Generator.SENDGRID_JAVA.getValue();
     }
 

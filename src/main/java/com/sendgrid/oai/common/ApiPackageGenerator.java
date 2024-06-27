@@ -7,14 +7,16 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import org.openapitools.codegen.DefaultCodegen;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-
 public abstract class ApiPackageGenerator {
+    private static final Logger logger = LoggerFactory.getLogger(ApiPackageGenerator.class);
     private static final String INPUT_SPEC_PATTERN = "[^_]+_(?<domain>.+?)(_(?<version>[^_]+))?\\..+";
     private static final String DEFAULT_URL = "/";
     private static final String SERVER_PATTERN = "https://(?<domain>[^:/?\\n]+)\\.sendgrid\\.com\\/?";
@@ -49,6 +51,8 @@ public abstract class ApiPackageGenerator {
 
     public String getVersion(final OpenAPI openAPI) {
         String fileName = defaultCodegen.getInputSpec();
+        logger.debug("Processing File: ",fileName);
+        
         int dotIndex = fileName.lastIndexOf('.');
         if (dotIndex != -1) {
             fileName = fileName.substring(0, dotIndex);

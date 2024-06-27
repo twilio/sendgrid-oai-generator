@@ -1,7 +1,15 @@
-if (Matcher.matches(Integer.toString(statusCode) ,"{{code}}")) {
-    {{dataType}} error = JsonUtil.fromJson(
-            response.getStream(),
-            {{dataType}}.class
-        );
-    throw new ApiErrorResponse(statusCode, null, error, response.getHeaders());
-}
+{{#dataType}}
+{{#vendorExtensions.x-list-datatype}}
+    if (Matcher.matches(Integer.toString(statusCode) ,"{{code}}")) {
+        TypeReference listTypeReference = new TypeReference<{{{vendorExtensions.x-error-return-type}}}>() {};
+        {{{dataType}}} error = ({{{dataType}}})JsonUtil.fromJson(response.getStream(),listTypeReference);
+        throw new ApiErrorResponse(statusCode, null, error, response.getHeaders());
+    }
+{{/vendorExtensions.x-list-datatype}}
+{{^vendorExtensions.x-list-datatype}}
+    if (Matcher.matches(Integer.toString(statusCode) ,"{{code}}")) {
+        {{dataType}} error = JsonUtil.fromJson(response.getStream(), {{dataType}}.class);
+        throw new ApiErrorResponse(statusCode, null, error, response.getHeaders());
+    }
+{{/vendorExtensions.x-list-datatype}}
+{{/dataType}}

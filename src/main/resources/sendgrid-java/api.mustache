@@ -34,7 +34,6 @@ public class {{classname}} extends ApiKeyBase {
     public ApiResponse<{{{vendorExtensions.x-success-return-type}}}> send(final ApiKeyRestClient client) {
         String path = "{{path}}";
         Request request = new Request(HttpMethod.{{httpMethod}}, path, Domains.API.toString());
-        request.setRegion(client.getRegion());
         {{#vendorExtensions.has-pathParams}}
             addPathParams(request);
         {{/vendorExtensions.has-pathParams}}

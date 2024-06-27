@@ -1,6 +1,6 @@
 {{>licenseInfo}}
 
-package com.sendgrid.rest.{{package}};
+package {{package}};
 {{#imports}}
 import {{import}};
 {{/imports}}
@@ -18,6 +18,5 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 
 {{#models}}{{#model}}
     {{^isEnum}}{{>pojo}} {{/isEnum}}
-    {{#isEnum}}{{#isString}}{{>enum}}{{/isString}}{{/isEnum}}
-    {{#isEnum}}{{#isInteger}}{{>enum_integer}}{{/isInteger}}{{/isEnum}}
+    {{#isEnum}}{{>enum}}{{/isEnum}}
 {{/model}}{{/models}}

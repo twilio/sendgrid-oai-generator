@@ -73,6 +73,16 @@ public class JavaOperationProcessor extends OperationProcessor {
                     setSuccessDatatype(codegenResponse);
                 }
             }
+             // Set Error respponse
+             else {
+                if (codegenResponse.dataType == null) {
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.ERROR_RETURN_TYPE, "Void");
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.ERROR_JSON_TYPE, "Void");
+                    codegenOperation.vendorExtensions.put(ApplicationConstants.VOID_DATATYPE, true);
+                } else {
+                    setErrorDatatype(codegenResponse);
+                }
+            }
         }
     }
     
@@ -80,13 +90,24 @@ public class JavaOperationProcessor extends OperationProcessor {
         String successJsontype = "Void";
         if (codegenResponse.containerTypeMapped != null) {
             successJsontype = codegenResponse.containerTypeMapped;
-            codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_LIST_DATATYPE, true);
+            codegenResponse.vendorExtensions.put(ApplicationConstants.SUCCESS_LIST_DATATYPE, true);
         } else {
             successJsontype = codegenResponse.dataType;
         }
         codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_JSON_TYPE, successJsontype);
         codegenOperation.vendorExtensions.put(ApplicationConstants.SUCCESS_RETURN_TYPE, codegenResponse.dataType);
-        
+    }
+
+    public void setErrorDatatype(CodegenResponse codegenResponse) {
+        String errorJsontype = "Void";
+        if (codegenResponse.containerTypeMapped != null) {
+            errorJsontype = codegenResponse.containerTypeMapped;
+            codegenResponse.vendorExtensions.put(ApplicationConstants.SUCCESS_LIST_DATATYPE, true);
+        } else {
+            errorJsontype = codegenResponse.dataType;
+        }
+        codegenResponse.vendorExtensions.put(ApplicationConstants.ERROR_JSON_TYPE, errorJsontype);
+        codegenResponse.vendorExtensions.put(ApplicationConstants.ERROR_RETURN_TYPE, codegenResponse.dataType);
     }
     
 }

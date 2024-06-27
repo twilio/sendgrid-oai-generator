@@ -82,7 +82,6 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
     parts = re.split(r'tsg_(.+?)_?(v\d+)?\.', domain, flags=re.IGNORECASE)
     domain_name = parts[1]
     api_version = parts[2] or ''
-    # special handling for files like twilio_lookups_bulk.json.
     # This has to be removed when naming is made consistent across all languages
     if api_version == '':
         index = domain_name.find('_')
@@ -96,16 +95,13 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
 if __name__ == '__main__':
     example_text = '''example:
 
-     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml /path/to/twilio-go -l go
-     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/twilio-go -l go
-     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
-     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml/twilio_accounts_v1.yaml /path/to/terraform-provider-twilio -l terraform
-     python3 scripts/build_twilio_library.py /path/to/twilio-oai/spec/yaml /path/to/terraform-provider-twilio --lang terraform'''
-    parser = argparse.ArgumentParser(description='Generate code from twilio-oai-generator', epilog=example_text,
+     python3 scripts/build_sendgrid_library.py /path/to/sendgrid-oai/spec/yaml /path/to/sendgrid-java -l java
+     python3 scripts/build_sendgrid_library.py /path/to/sendgrid-oai/spec/yaml/tsg_alerts_v3.yaml /path/to/sendgrid-java -l java'''
+    parser = argparse.ArgumentParser(description='Generate code from sendgrid-oai-generator', epilog=example_text,
                                      formatter_class=argparse.RawTextHelpFormatter)
     parser.add_argument('spec_path', type=str, help='path to open api specs')
     parser.add_argument('output_path', type=str, help='path to output the generated code')
-    parser.add_argument('-l', '--lang', type=str, help='generate Twilio library from twilio-oai',
-                        choices=['go', 'terraform', 'java', 'node', 'csharp', 'php', 'python', 'ruby'], required=True)
+    parser.add_argument('-l', '--lang', type=str, help='generate Sendgrid library from sendgrid-oai',
+                        choices=['go', 'java', 'node', 'csharp', 'php', 'python', 'ruby'], required=True)
     args = parser.parse_args()
     build(args.spec_path, args.output_path, args.lang)

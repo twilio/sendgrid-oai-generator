@@ -32,3 +32,4 @@ tmp
 **/.openapi-generator*
 **/docs
 **/*.bak
+generateFiles.py

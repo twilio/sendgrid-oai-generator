@@ -24,7 +24,7 @@ public class SendgridGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
         return Arrays.asList(
-                //Generator.SENDGRID_JAVA,
+                Generator.SENDGRID_JAVA,
                 Generator.SENDGRID_PYTHON);
     }
 
@@ -37,8 +37,7 @@ public class SendgridGeneratorTest {
 
     @Test
     public void launchGenerator() {
-        //final String pathname = "examples/spec/tsg_student_api_v3.yaml";
-        final String pathname = "/Users/sbansla/Documents/code/sendgrid-oai/spec/yaml/tsg_alerts_v3.yaml";
+        final String pathname = "examples/spec/tsg_student_api_v3.yaml";
 
         File filesList[];
         File directoryPath = new File(pathname);

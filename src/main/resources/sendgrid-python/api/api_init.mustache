@@ -1,0 +1,19 @@
+{{#pathParams}}
+    {{{dataType}}} {{paramName}}
+{{/pathParams}}
+{{#queryParams}}
+    {{#required}}
+        {{{dataType}}} {{paramName}}
+    {{/required}}
+    {{^required}}
+        {{{dataType}}} {{paramName}}
+    {{/required}}
+{{/queryParams}}
+{{#headerParams}}
+    {{#required}}
+        {{{dataType}}} {{paramName}}
+    {{/required}}
+    {{^required}}
+        {{{dataType}}} {{paramName}}
+    {{/required}}
+{{/headerParams}}

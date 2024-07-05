@@ -24,7 +24,8 @@ public class SendgridGeneratorTest {
     @Parameterized.Parameters
     public static Collection<Generator> generators() {
         return Arrays.asList(
-                Generator.SENDGRID_JAVA);
+                Generator.SENDGRID_JAVA,
+                Generator.SENDGRID_PYTHON);
     }
 
     private final Generator generator;

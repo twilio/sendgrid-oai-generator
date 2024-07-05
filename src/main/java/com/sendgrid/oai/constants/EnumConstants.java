@@ -9,7 +9,8 @@ public class EnumConstants {
     @RequiredArgsConstructor
     public enum Generator {
         SENDGRID_JAVA("sendgrid-java"),
-        JAVA("java");
+        SENDGRID_PYTHON("sendgrid-python"),
+        PYTHON("python");
 
         private final String value;
     }
@@ -63,7 +64,8 @@ public class EnumConstants {
     public enum MustacheLocation {
         JAVA("sendgrid-java"),
         CSHARP("sendgrid-csharp"),
-        GO("sendgrid-go");
+        GO("sendgrid-go"),
+        PYTHON("sendgrid-python");
 
         private final String value;
     }
@@ -71,7 +73,8 @@ public class EnumConstants {
     @Getter
     @RequiredArgsConstructor
     public enum BasePackage {
-        JAVA("com.sendgrid.rest");
+        JAVA("com.sendgrid.rest"),
+        PYTHON("rest");
 
         private final String value;
     }

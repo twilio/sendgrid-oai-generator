@@ -1,0 +1,18 @@
+version: '3'
+services:
+  java-test:
+    build:
+      context: ../java
+    volumes:
+      - ../java:/local
+    depends_on:
+      - prism_student
+
+  prism_student:
+    image: stoplight/prism:4.10.3
+    volumes:
+      - ../spec/tsg_student_api_v3.yaml:/tmp/oai.yaml
+    hostname: api.sendgrid.com
+    command: >
+      mock -p 80 --host 0.0.0.0
+      /tmp/oai.yaml

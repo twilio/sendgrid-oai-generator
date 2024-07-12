@@ -5,3 +5,10 @@ install:
 
 test:
 	mvn clean test
+
+generate: install
+	bash scripts/generate.sh
+
+# for specific language use LANGUAGES for ex: make test-docker LANGUAGES=java
+test-docker: generate
+	bash scripts/prism.sh

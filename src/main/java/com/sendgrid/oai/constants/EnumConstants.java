@@ -10,6 +10,7 @@ public class EnumConstants {
     public enum Generator {
         SENDGRID_JAVA("sendgrid-java"),
         SENDGRID_PYTHON("sendgrid-python"),
+        SENDGRID_GO("sendgrid-go"),
         PYTHON("python");
 
         private final String value;
@@ -40,7 +41,7 @@ public class EnumConstants {
 
         private final String value;
     }
-    
+
     @Getter
     @RequiredArgsConstructor
     public enum PathType {
@@ -74,7 +75,8 @@ public class EnumConstants {
     @RequiredArgsConstructor
     public enum BasePackage {
         JAVA("com.sendgrid.rest"),
-        PYTHON("rest");
+        PYTHON("rest"),
+        GO("rest");
 
         private final String value;
     }

@@ -24,4 +24,5 @@ public class ApplicationConstants {
     public static final String IS_FAILURE = "true";
     public static final String MOUNT_NAME = "mountName";
     public static final String API_NAME_SUFFIX = "_by_id";
+    public static final String HYPHEN_OR_UNDERSCORE = "[-_]";
 }

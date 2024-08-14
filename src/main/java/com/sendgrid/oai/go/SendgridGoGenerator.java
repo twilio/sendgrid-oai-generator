@@ -29,7 +29,7 @@ public class SendgridGoGenerator extends GoClientCodegen {
 
     @Override
     public void processOpts() {
-        additionalProperties.put("modelFileFolder", "models"); // sets models folder for model files
+//        additionalProperties.put("modelFileFolder", "models"); // sets models folder for model files
         super.processOpts();
         templateModifier.resetPredefinedTemplate();
         this.filesMetadataFilename = "";

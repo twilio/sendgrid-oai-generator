@@ -14,29 +14,26 @@ import (
 )
 
 {{#operation}}
-{{#hasOptionalParams}}
 
-// Optional parameters for the method '{{{nickname}}}'
 type {{{nickname}}}Params struct {
-{{#optionalParams}}
+{{#allParams}}
     // {{{description}}}
     {{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
-{{/optionalParams}}
+{{/allParams}}
 }
 
-{{#optionalParams}}
+{{#allParams}}
 func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}}) (*{{{nickname}}}Params){
     params.{{paramName}} = &{{paramName}}
     return params
 }
-{{/optionalParams}}
-{{/hasOptionalParams}}
+{{/allParams}}
 
 {{^vendorExtensions.x-is-read-operation}}
 {{#notes}}
 // {{{notes}}}
 {{/notes}}
-func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
+func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{/hasParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
     path := "{{{path}}}"
     {{>partial_serialization}}
 
@@ -47,12 +44,12 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 	}
 {{/headerParams}}
 {{/hasHeaderParams}}
-{{#vendorExtensions.x-is-json-type}}
+{{#vendorExtensions.has-body}}
     resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
-{{/vendorExtensions.x-is-json-type}}
-{{^vendorExtensions.x-is-json-type}}
+{{/vendorExtensions.has-body}}
+{{^vendorExtensions.has-body}}
     resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
-{{/vendorExtensions.x-is-json-type}}
+{{/vendorExtensions.has-body}}
 {{#returnType}}
     if err != nil {
         return nil, err

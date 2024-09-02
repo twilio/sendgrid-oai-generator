@@ -9,12 +9,12 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.GoClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
-import org.openapitools.codegen.model.ModelsMap;
 import org.openapitools.codegen.model.OperationsMap;
+import org.openapitools.codegen.utils.StringUtils;
 
-import java.io.File;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SendgridGoGenerator extends GoClientCodegen {
     private final ApiPackageGenerator apiPackageGenerator;
@@ -58,12 +58,8 @@ public class SendgridGoGenerator extends GoClientCodegen {
     }
 
     private void processCodegenOperations(final List<CodegenOperation> operations) {
-//        GoOperationProcessor operationProcessor = new GoOperationProcessor();
-//        GoApiResourceBuilder goApiResourceBuilder = new GoApiResourceBuilder(operations, operationProcessor);
-//        goApiResourceBuilder.process();
-//        return goApiResourceBuilder.build();
         processServer();
-        processApiPath();
+        processApiPath(operations);
         processOperation(operations);
     }
 
@@ -71,8 +67,8 @@ public class SendgridGoGenerator extends GoClientCodegen {
         // TODO add server processing here
     }
 
-    private void processApiPath() {
-        // TODO add api path processing here
+    private void processApiPath(final List<CodegenOperation> operations) {
+        camelizePathParams(operations);
     }
 
     private void processOperation(final List<CodegenOperation> operations) {
@@ -81,12 +77,28 @@ public class SendgridGoGenerator extends GoClientCodegen {
             operationProcessor.setCodegenOperation(operation);
             operationProcessor
                     .operationId()
-                    .pathParams()
-                    .queryParams()
-                    .headerParams()
-                    .body()
+                    .params()
                     .response();
         }
+    }
+
+    private void camelizePathParams(final List<CodegenOperation> operations) {
+        // Regular pattern to match path parameters
+        Pattern pattern = Pattern.compile("\\{([^}]+)\\}");
+        for(CodegenOperation operation: operations) {
+            Matcher matcher = pattern.matcher(operation.path);
+            while (matcher.find()) {
+                String pathParam = matcher.group(1);
+                operation.path = operation.path.replace("{" + pathParam + "}", "{" + StringUtils.camelize(pathParam) + "}");
+            }
+        }
+    }
+
+    @Override
+    public String toParamName(String name) {
+        name = name.replaceAll("[-+.^:,]", "");
+        name = name.replace("<", "Before").replace(">", "After");
+        return super.toVarName(name);
     }
 
     @Override

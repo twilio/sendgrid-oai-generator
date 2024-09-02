@@ -18,7 +18,7 @@
 
 {{/vendorExtensions.has-body}}
 {{#allParams}}
-{{#vendorExtensions.x-is-body-param}}
+{{#isBodyParam}}
     body := []byte{}
     if params != nil && params.{{paramName}} != nil {
         b, err := json.Marshal(*params.{{paramName}})
@@ -27,8 +27,8 @@
         }
         body = b
     }
-{{/vendorExtensions.x-is-body-param}}
-{{^vendorExtensions.x-is-body-param}}
+{{/isBodyParam}}
+{{^isBodyParam}}
 {{^isHeaderParam}}
 {{^isPathParam}}
 {{^vendorExtensions.x-custom}}
@@ -67,5 +67,5 @@
 {{/vendorExtensions.x-custom}}
 {{/isPathParam}}
 {{/isHeaderParam}}
-{{/vendorExtensions.x-is-body-param}}
+{{/isBodyParam}}
 {{/allParams}}

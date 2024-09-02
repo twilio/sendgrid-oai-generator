@@ -25,5 +25,4 @@ public class ApplicationConstants {
     public static final String MOUNT_NAME = "mountName";
     public static final String API_NAME_SUFFIX = "_by_id";
     public static final String HYPHEN_OR_UNDERSCORE = "[-_]";
-    public static final String IS_BODY_PARAM = "x-is-body-param";
 }

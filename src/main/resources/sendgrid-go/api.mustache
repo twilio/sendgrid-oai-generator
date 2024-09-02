@@ -77,7 +77,7 @@ func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{
 {{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
-func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnContainer}}}, error) {
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{^isPathParam}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/isPathParam}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnType}}}, error) {
     path := "{{{path}}}"
 
     {{>partial_serialization}}
@@ -95,7 +95,7 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 
     defer resp.Body.Close()
 
-    ps := &{{{returnContainer}}}{}
+    ps := &{{{returnType}}}{}
     if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
         return nil, err
     }

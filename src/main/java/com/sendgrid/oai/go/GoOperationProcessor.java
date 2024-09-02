@@ -2,9 +2,10 @@ package com.sendgrid.oai.go;
 
 import com.sendgrid.oai.common.OperationProcessor;
 import com.sendgrid.oai.constants.ApplicationConstants;
-import org.openapitools.codegen.CodegenOperation;
-import org.openapitools.codegen.CodegenParameter;
-import org.openapitools.codegen.CodegenResponse;
+import com.sendgrid.oai.constants.EnumConstants;
+import org.openapitools.codegen.*;
+
+import java.util.Arrays;
 
 public class GoOperationProcessor extends OperationProcessor {
     private CodegenOperation codegenOperation;
@@ -54,9 +55,6 @@ public class GoOperationProcessor extends OperationProcessor {
     @Override
     public OperationProcessor body() {
         super.body();
-        for(CodegenParameter param: codegenOperation.allParams)
-            if(param.isBodyParam)
-                param.vendorExtensions.put(ApplicationConstants.IS_BODY_PARAM, true);
         return this;
     }
 
@@ -70,6 +68,16 @@ public class GoOperationProcessor extends OperationProcessor {
     @Override
     public OperationProcessor operationId() {
         super.operationId();
+        final EnumConstants.Operation method = Arrays
+                .stream(EnumConstants.Operation.values())
+                .filter(item -> codegenOperation.operationId.toLowerCase().startsWith(item.getValue().toLowerCase()))
+                .findFirst()
+                .orElse(EnumConstants.Operation.FETCH); // for GetStudent
+
+        // in api.mustache put x-is-list-operation to add pagination
+        codegenOperation.vendorExtensions.put("x-is-" + method.name().toLowerCase() + "-operation", true);
+        if(method == EnumConstants.Operation.LIST)
+            codegenOperation.vendorExtensions.put("x-domain-name", codegenOperation.nickname.replaceFirst("List", ""));
         return this;
     }
 

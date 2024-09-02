@@ -3,14 +3,35 @@ package com.sendgrid.oai.go;
 import com.sendgrid.oai.common.OperationProcessor;
 import com.sendgrid.oai.constants.ApplicationConstants;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenResponse;
 
 public class GoOperationProcessor extends OperationProcessor {
     private CodegenOperation codegenOperation;
 
+    @Override
     public void setCodegenOperation(CodegenOperation codegenOperation) {
         this.codegenOperation = codegenOperation;
         super.setCodegenOperation(codegenOperation);
+    }
+
+    public void marshallParams() {
+        for(CodegenParameter parameter: codegenOperation.allParams) {
+            if (parameter.isFreeFormObject || parameter.isAnyType) {
+                parameter.vendorExtensions.put("x-marshal", true);
+            }
+
+            if (parameter.isArray && (parameter.items.isFreeFormObject || parameter.items.isAnyType)) {
+                parameter.items.vendorExtensions.put("x-marshal", true);
+            }
+        }
+    }
+
+    @Override
+    public OperationProcessor params() {
+        super.params();
+        this.marshallParams();
+        return this;
     }
 
     @Override
@@ -30,17 +51,23 @@ public class GoOperationProcessor extends OperationProcessor {
         return this;
     }
 
+    @Override
     public OperationProcessor body() {
         super.body();
+        for(CodegenParameter param: codegenOperation.allParams)
+            if(param.isBodyParam)
+                param.vendorExtensions.put(ApplicationConstants.IS_BODY_PARAM, true);
         return this;
     }
 
+    @Override
     public OperationProcessor response() {
         super.response();
         setResponseDataType();
         return this;
     }
 
+    @Override
     public OperationProcessor operationId() {
         super.operationId();
         return this;

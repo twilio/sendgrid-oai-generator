@@ -13,7 +13,7 @@ type ApiService struct {
 func NewApiService(requestHandler *sendgrid.RequestHandler) *ApiService {
 	return &ApiService {
 		requestHandler: requestHandler,
-		baseURL:        "{{#hasServers}}{{#servers}}{{url}}{{/servers}}{{/hasServers}}",
+		baseURL:        "{{#hasServers}}{{#servers.0}}{{url}}{{/servers.0}}{{/hasServers}}",
 	}
 }
 

@@ -5,6 +5,7 @@ import com.sendgrid.oai.common.TagGenerator;
 import com.sendgrid.oai.common.TemplateModifier;
 import com.sendgrid.oai.constants.EnumConstants;
 import io.swagger.v3.oas.models.OpenAPI;
+import org.openapitools.codegen.CodegenConstants;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.GoClientCodegen;
@@ -29,7 +30,7 @@ public class SendgridGoGenerator extends GoClientCodegen {
 
     @Override
     public void processOpts() {
-//        additionalProperties.put("modelFileFolder", "models"); // sets models folder for model files
+//        additionalProperties.put("modelFileFolder", "models"); // sets 'models' folder for model files
         super.processOpts();
         templateModifier.resetPredefinedTemplate();
         this.filesMetadataFilename = "";
@@ -40,6 +41,13 @@ public class SendgridGoGenerator extends GoClientCodegen {
         apiPackageGenerator.setOutputDir(openAPI); // appends domain, version and directory to current output directory
         supportingFiles.add(new SupportingFile("api_service.mustache", "api_service.go"));
         supportingFiles.add(new SupportingFile("README.mustache", "README.md"));
+
+        additionalProperties.put("apiDocPath", this.apiDocPath);
+        additionalProperties.put(CodegenConstants.ENUM_CLASS_PREFIX, true);
+        additionalProperties.put(CodegenConstants.IS_GO_SUBMODULE, true);
+
+        modelDocTemplateFiles().put("model_doc.mustache", ".md");
+        apiDocTemplateFiles().put("api_doc.mustache", ".md");
     }
 
     @Override

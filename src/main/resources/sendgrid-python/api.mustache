@@ -8,8 +8,45 @@ from typing_extensions import Annotated
 {{#imports}}
     {{import}}
 {{/imports}}
-class {{classname}}:
-    def __init__(self) -> None:
-        {{>api/api_init}}
 
+{{#operations}}
+class {{classname}}:
+    def __init__(self, client) -> None:
+        self.client = client
+    
+    def send(
+        self,
+        {{>helper/method_args}}
+    ):
+        path='{{path}}'
+    {{#vendorExtensions.has-headerParams}}
+        headers = values.of(
+        {
+        {{#headerParams}}
+            '{{baseName}}': self.{{paramName}},
+        {{/headerParams}}
+        })
+    {{/vendorExtensions.has-headerParams}}
+    {{#vendorExtensions.has-body}}
+        {{#bodyParams}}
+        data = None
+        if {{paramName}} is not None:
+            data = {{paramName}}.to_dict()
+        {{/bodyParams}}
+    {{/vendorExtensions.has-body}}
+        request = Request(
+            method='{{httpMethod}}',
+            url=path,
+            data=data,
+            headers=headers
+        )
+        response=self.client.send(request)
+        if response is None:
+            raise ApiException(error="CreateAlert creation failed: Unable to connect to server")
+
+        if response.is_success():
+
+        else:
+            raise ApiException(status_code=response.status_code, error=json.loads(response.text), headers=response.headers)
+{{/operations}}
 {{/resources}}

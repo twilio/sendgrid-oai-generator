@@ -74,7 +74,7 @@ public class EnumConstants {
     @RequiredArgsConstructor
     public enum BasePackage {
         JAVA("com.sendgrid.rest"),
-        PYTHON("rest");
+        PYTHON("sendgrid.rest");
 
         private final String value;
     }

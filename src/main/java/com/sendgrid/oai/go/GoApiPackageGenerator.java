@@ -20,7 +20,7 @@ public class GoApiPackageGenerator extends ApiPackageGenerator {
     public void setOutputDir(final OpenAPI openAPI) {
         String domain = getDomain(openAPI).replaceAll(ApplicationConstants.HYPHEN_OR_UNDERSCORE, "");
         String version = getVersion(openAPI).replaceAll(ApplicationConstants.HYPHEN_OR_UNDERSCORE, "");
-        String directory = getDirectory(openAPI).replaceAll(ApplicationConstants.HYPHEN_OR_UNDERSCORE, "");
+        String directory = getDirectory(openAPI);
 
         String apiPackage = EnumConstants.BasePackage.GO.getValue() + "." + domain + "." + version + "." + directory;
         String originalOutputDir = defaultCodegen.getOutputDir();
@@ -41,7 +41,6 @@ public class GoApiPackageGenerator extends ApiPackageGenerator {
 
     @Override
     public String getDirectory(final OpenAPI openAPI) {
-        String directory = super.getDirectory(openAPI);
-        return directory.replace("_", "").toLowerCase();
+        return super.getDirectory(openAPI);
     }
 }

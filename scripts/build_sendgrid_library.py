@@ -4,7 +4,8 @@ import os
 import re
 import shutil
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Iterable
+import pystache
 
 from clean_unused_imports import remove_unused_imports, remove_duplicate_imports
 
@@ -20,7 +21,6 @@ CLEANUP_IMPORT_LANGUAGES = ['java', 'php']
 REMOVE_DUPLICATE_IMPORT_LANGUAGES = ['node']
 CONFIG_FOLDER = 'tmp'
 
-
 def build(openapi_spec_path: str, output_path: str, language: str) -> None:
     if os.path.isfile(openapi_spec_path):
         spec_folder, domain = os.path.split(openapi_spec_path)
@@ -30,6 +30,7 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
         spec_files = sorted(os.listdir(spec_folder))
 
     generate(spec_folder, spec_files, output_path, language)
+    generate_client_file(language, openapi_spec_path, output_path)
 
 
 def generate(spec_folder: str, spec_files: List[str], output_path: str, language: str) -> None:
@@ -76,6 +77,28 @@ def run_openapi_generator(parent_dir: Path, language: str) -> None:
     if os.system(command + '> /dev/null') != 0:  # Suppress stdout
         raise RuntimeError()
 
+def write_generated_file(template_file_path: str, template_parameters: dict, target_file_path: str) -> None:
+    with open(template_file_path, 'r') as f:
+        post_page_template = f.read()
+    post_page_result = pystache.render(post_page_template, template_parameters)
+    with open(target_file_path, 'w') as f:
+        f.write(post_page_result)
+
+def generate_client_file(language, spec_location, output_path):
+    RESOURCES_PATH = os.path.join(os.path.dirname(__file__), 'resources')
+    if language == 'go':
+        TEMPLATE_BASE_PATH = os.path.join(RESOURCES_PATH, 'go')
+        domains_transformed = []
+        api_path = os.path.join(output_path, 'rest/api')
+        for version in sorted(os.listdir(api_path)):
+            for domain in sorted(os.listdir(os.path.join(api_path, version))):
+                lib_path = f'github.com/sendgrid/sendgrid-go/rest/api/{version}/{domain}'
+                domain_name_camel_case = ''.join([word.capitalize() for word in (domain + '_' + version).split('_')])
+                domains_transformed.append({"domain": domain_name_camel_case, "path": lib_path})
+
+        write_generated_file(f'{TEMPLATE_BASE_PATH}/client.mustache',
+                             {"domains": domains_transformed},
+                             f'{output_path}/sendgrid.go')
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
     full_path = oai_spec_location if is_file else os.path.join(oai_spec_location, domain)

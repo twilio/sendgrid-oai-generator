@@ -1,12 +1,16 @@
 {{#resources}}
 {{>licenseInfo}}
+import json
 import warnings
-from pydantic import validate_call, Field, StrictFloat, StrictStr, StrictInt
 from typing import Any, Dict, List, Optional, Tuple, Union
 from typing_extensions import Annotated
+from sendgrid.base import values
+from sendgrid.exceptions import ApiException
+from sendgrid.http.request import Request
+from sendgrid.http.response import ApiResponse
 
 {{#imports}}
-    {{import}}
+  {{import}}
 {{/imports}}
 
 {{#operations}}
@@ -27,9 +31,9 @@ class {{classname}}:
         {{/headerParams}}
         })
     {{/vendorExtensions.has-headerParams}}
+        data = None
     {{#vendorExtensions.has-body}}
         {{#bodyParams}}
-        data = None
         if {{paramName}} is not None:
             data = {{paramName}}.to_dict()
         {{/bodyParams}}
@@ -43,9 +47,8 @@ class {{classname}}:
         response=self.client.send(request)
         if response is None:
             raise ApiException(error="CreateAlert creation failed: Unable to connect to server")
-
         if response.is_success():
-
+            return ApiResponse(status_code=response.status_code, model=json.loads(response.text), headers=response.headers)
         else:
             raise ApiException(status_code=response.status_code, error=json.loads(response.text), headers=response.headers)
 {{/operations}}

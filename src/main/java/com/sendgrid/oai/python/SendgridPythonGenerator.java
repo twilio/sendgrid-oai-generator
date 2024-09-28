@@ -44,8 +44,10 @@ public class SendgridPythonGenerator extends PythonClientCodegen {
         apiPackageGenerator.setOutputDir(openAPI);
         tagGenerator.updateOperationTags(openAPI);
         this.openAPI = openAPI;
-        String modelPackage = this.modelPackage.replace(".", "/");
-        String apiPackage = this.apiPackage.replace(".", "/");
+        // Used for setting import base package.
+        this.setPackageName(this.apiPackage);
+        //String modelPackage = this.modelPackage.replace(".", "/");
+        //String apiPackage = this.apiPackage.replace(".", "/");
         
         // __init__.mustache, __init__api.mustache, __init__model.mustache, __init__package.mustache
         // apiInfo ==> ApiInfoMap
@@ -59,8 +61,8 @@ public class SendgridPythonGenerator extends PythonClientCodegen {
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
-        CodegenOperation codegenOperation = processCodegenOperations(results.getOperations().getOperation());
-        results.put("resources", codegenOperation);
+        PythonApiResource pythonApiResource = processCodegenOperations(results.getOperations().getOperation());
+        results.put("resources", pythonApiResource);
         return results;
     }
     
@@ -71,22 +73,14 @@ public class SendgridPythonGenerator extends PythonClientCodegen {
         return bundle;
     }
 
-    private CodegenOperation processCodegenOperations(final List<CodegenOperation> operations) {
-        PythonOperationProcessor operationProcessor = new PythonOperationProcessor();
+    private PythonApiResource processCodegenOperations(final List<CodegenOperation> operations) {
         if (operations.isEmpty() || operations.size() > 1) {
             throw new RuntimeException("Grouping of operation not allowed, Remove similar tags from multiple operations");
         }
-        
-        CodegenOperation operation = operations.get(0);
-        operationProcessor.setCodegenOperation(operation);
-        operationProcessor
-                .operationId()
-                .pathParams()
-                .queryParams()
-                .headerParams()
-                .body()
-                .response();
-        return operation;
+        PythonOperationProcessor operationProcessor = new PythonOperationProcessor();
+        PythonApiResourceBuilder pythonApiResourceBuilder = new PythonApiResourceBuilder(operations, operationProcessor);
+        pythonApiResourceBuilder.process();
+        return pythonApiResourceBuilder.build();
     }
 
     @Override

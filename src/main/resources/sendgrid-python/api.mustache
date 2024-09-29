@@ -38,7 +38,9 @@ class {{classname}}:
             '{{baseName}}': {{paramName}},
         {{/headerParams}}
         })
-        headers["Content-Type"] = "application/json"
+        {{#vendorExtensions.consume}}
+        headers["Content-Type"] = "{{.}}"
+        {{/vendorExtensions.consume}}
     {{/vendorExtensions.has-headerParams}}
         data = None
     {{#vendorExtensions.has-body}}
@@ -56,13 +58,14 @@ class {{classname}}:
         response=self.client.send(request)
         if response is None:
             raise ApiException(error="CreateAlert creation failed: Unable to connect to server")
-        if response.is_success():
-            return ApiResponse(status_code=response.status_code, model=json.loads(response.text), headers=response.headers)
+
+        if response.text:
+            text = json.loads(response.text)
         else:
-            if response.text:
-                text = json.loads(response.text)
-            else:
-                text = ""
-            raise ApiException(status_code=response.status_code, error=json.loads(response.text), headers=response.headers)
+            text = ""
+        if response.is_success():
+            return ApiResponse(status_code=response.status_code, model=text, headers=response.headers)
+        else:
+            raise ApiException(status_code=response.status_code, error=text, headers=response.headers)
 {{/operations}}
 {{/resources}}

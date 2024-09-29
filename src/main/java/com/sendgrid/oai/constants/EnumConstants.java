@@ -78,4 +78,11 @@ public class EnumConstants {
 
         private final String value;
     }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum SupportedContentType {
+        APPLICATION_JSON("application/json");
+        private final String value;
+    }
 }

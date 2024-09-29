@@ -10,7 +10,7 @@ from sendgrid.http.request import Request
 from sendgrid.http.response import ApiResponse
 
 {{#imports}}
-  {{import}}
+{{import}}
 {{/imports}}
 
 {{#operations}}
@@ -23,18 +23,27 @@ class {{classname}}:
         {{>helper/method_args}}
     ):
         path='{{path}}'
+{{#vendorExtensions.has-pathParams}}
+        path = path.format(
+    {{#pathParams}}
+        {{paramName}}={{paramName}},
+    {{/pathParams}}
+        )
+    {{/vendorExtensions.has-pathParams}}
+
     {{#vendorExtensions.has-headerParams}}
         headers = values.of(
         {
         {{#headerParams}}
-            '{{baseName}}': self.{{paramName}},
+            '{{baseName}}': {{paramName}},
         {{/headerParams}}
         })
+        headers["Content-Type"] = "application/json"
     {{/vendorExtensions.has-headerParams}}
         data = None
     {{#vendorExtensions.has-body}}
         {{#bodyParams}}
-        if {{paramName}} is not None:
+        if {{paramName}}:
             data = {{paramName}}.to_dict()
         {{/bodyParams}}
     {{/vendorExtensions.has-body}}
@@ -50,6 +59,10 @@ class {{classname}}:
         if response.is_success():
             return ApiResponse(status_code=response.status_code, model=json.loads(response.text), headers=response.headers)
         else:
+            if response.text:
+                text = json.loads(response.text)
+            else:
+                text = ""
             raise ApiException(status_code=response.status_code, error=json.loads(response.text), headers=response.headers)
 {{/operations}}
 {{/resources}}

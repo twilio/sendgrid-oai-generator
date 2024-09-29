@@ -3,7 +3,7 @@
 # import models into model package
 {{#models}}
     {{#model}}
-        from {{modelPackage}}.{{classFilename}} import {{classname}}
+from {{modelPackage}}.{{classFilename}} import {{classname}}
     {{/model}}
 {{/models}}
 __all__ = [{{#models}} {{#model}}'{{classname}}'{{^-last}},{{/-last}} {{/model}} {{/models}}]

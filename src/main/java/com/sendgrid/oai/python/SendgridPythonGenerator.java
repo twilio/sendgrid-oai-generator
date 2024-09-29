@@ -46,8 +46,9 @@ public class SendgridPythonGenerator extends PythonClientCodegen {
         this.openAPI = openAPI;
         // Used for setting import base package.
         this.setPackageName(this.apiPackage);
-        //String modelPackage = this.modelPackage.replace(".", "/");
-        //String apiPackage = this.apiPackage.replace(".", "/");
+        // Making sure api and models are generated with correct directory structure
+        String modelPackage = this.modelPackage.replace(".", "/");
+        String apiPackage = this.apiPackage.replace(".", "/");
         
         // __init__.mustache, __init__api.mustache, __init__model.mustache, __init__package.mustache
         // apiInfo ==> ApiInfoMap

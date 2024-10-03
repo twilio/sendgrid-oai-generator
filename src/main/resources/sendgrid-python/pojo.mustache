@@ -14,7 +14,7 @@ class {{classname}}:
         return {key: to_serializable(value)
             for key, value in {
         {{#vars}}
-            "{{name}}": self.{{name}}{{^-last}},{{/-last}}
+            "{{baseName}}": self.{{name}}{{^-last}},{{/-last}}
         {{/vars}}
             }.items() if value is not None}
 
@@ -26,6 +26,6 @@ class {{classname}}:
     def generate_model(payload: Dict[str, object]):
         return {{classname}}(
         {{#vars}}
-            {{name}}=payload.get('{{name}}'){{^-last}},{{/-last}}
+            {{name}}=payload.get('{{baseName}}'){{^-last}},{{/-last}}
         {{/vars}}
         )

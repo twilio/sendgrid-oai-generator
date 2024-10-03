@@ -35,7 +35,6 @@
     if params != nil && params.{{paramName}} != nil {
 {{#isArray}}
         for _, item  := range *params.{{paramName}} {
-{{#items.vendorExtensions.x-marshal}}
             v, err := json.Marshal(item)
 
             if err != nil {
@@ -43,10 +42,7 @@
             }
 
             data.Add("{{{baseName}}}", string(v))
-{{/items.vendorExtensions.x-marshal}}
-{{^items.vendorExtensions.x-marshal}}
-    data.Add("{{{baseName}}}", item)
-{{/items.vendorExtensions.x-marshal}}
+
         }
 {{/isArray}}
 {{^isArray}}

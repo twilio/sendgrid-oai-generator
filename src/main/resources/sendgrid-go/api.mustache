@@ -57,7 +57,13 @@ func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{
     defer resp.Body.Close()
 {{#vendorExtensions.x-valid-responses}}
     if resp.StatusCode == {{code}} {
-        ps := &{{dataType}}{}
+        {{#vendorExtensions.x-is-string}}
+            s := ""
+            ps := &s
+        {{/vendorExtensions.x-is-string}}
+        {{^vendorExtensions.x-is-string}}
+            ps := &{{dataType}}{}
+        {{/vendorExtensions.x-is-string}}
         if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
             return nil, err
         }

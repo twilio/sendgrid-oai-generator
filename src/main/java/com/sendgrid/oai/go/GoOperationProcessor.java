@@ -5,6 +5,7 @@ import com.sendgrid.oai.constants.ApplicationConstants;
 import com.sendgrid.oai.constants.EnumConstants;
 import org.openapitools.codegen.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GoOperationProcessor extends OperationProcessor {
@@ -120,7 +121,11 @@ public class GoOperationProcessor extends OperationProcessor {
             }
 
              if(codegenResponse.dataType!=null && !codegenResponse.dataType.equals("interface{}")) {
-                 codegenOperation.vendorExtensions.put("x-valid-responses", codegenResponse);
+                 if(codegenResponse.dataType.equals("string"))
+                     codegenResponse.vendorExtensions.put("x-is-string", true);
+                 ArrayList<CodegenResponse> validResponses = (ArrayList<CodegenResponse>) codegenOperation.vendorExtensions.getOrDefault("x-valid-responses", new ArrayList<>());
+                 validResponses.add(codegenResponse);
+                 codegenOperation.vendorExtensions.put("x-valid-responses", validResponses);
              }
         }
     }

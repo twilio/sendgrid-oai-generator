@@ -33,7 +33,7 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 {{#notes}}
 // {{{notes}}}
 {{/notes}}
-func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{/hasParams}}) ({{#returnType}}*{{{returnType}}}, {{/returnType}}error) {
+func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{/hasParams}}) (interface{}, error) {
     path := "{{{path}}}"
     {{>partial_serialization}}
 
@@ -50,29 +50,22 @@ func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{
 {{^vendorExtensions.has-body}}
     resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
 {{/vendorExtensions.has-body}}
-{{#returnType}}
     if err != nil {
         return nil, err
     }
 
     defer resp.Body.Close()
+{{#vendorExtensions.x-valid-responses}}
+    if resp.StatusCode == {{code}} {
+        ps := &{{dataType}}{}
+        if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+            return nil, err
+        }
 
-    ps := &{{{returnType}}}{}
-    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-        return nil, err
+        return ps, err
     }
-
-    return ps, err
-{{/returnType}}
-{{^returnType}}
-    if err != nil {
-        return err
-    }
-
-    defer resp.Body.Close()
-
-    return nil
-{{/returnType}}
+{{/vendorExtensions.x-valid-responses}}
+    return nil, nil
 }
 {{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}

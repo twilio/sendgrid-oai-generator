@@ -118,6 +118,10 @@ public class GoOperationProcessor extends OperationProcessor {
                     setErrorDatatype(codegenResponse);
                 }
             }
+
+             if(codegenResponse.dataType!=null && !codegenResponse.dataType.equals("interface{}")) {
+                 codegenOperation.vendorExtensions.put("x-valid-responses", codegenResponse);
+             }
         }
     }
 

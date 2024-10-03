@@ -74,8 +74,15 @@ public class EnumConstants {
     @RequiredArgsConstructor
     public enum BasePackage {
         JAVA("com.sendgrid.rest"),
-        PYTHON("rest");
+        PYTHON("sendgrid.rest");
 
+        private final String value;
+    }
+
+    @Getter
+    @RequiredArgsConstructor
+    public enum SupportedContentType {
+        APPLICATION_JSON("application/json");
         private final String value;
     }
 }

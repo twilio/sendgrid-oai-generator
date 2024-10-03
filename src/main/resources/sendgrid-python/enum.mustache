@@ -1,0 +1,6 @@
+class {{classname}}(Enum):
+{{#allowableValues}}
+    {{#enumVars}}
+        {{{name}}}={{{value}}}
+    {{/enumVars}}
+{{/allowableValues}}

@@ -1,8 +1,11 @@
 package com.sendgrid.oai.common;
 
 import com.sendgrid.oai.constants.ApplicationConstants;
+import com.sendgrid.oai.constants.EnumConstants.SupportedContentType;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.codegen.CodegenOperation;
+
+import java.util.Map;
 
 @RequiredArgsConstructor
 public class OperationProcessor {
@@ -72,5 +75,23 @@ public class OperationProcessor {
     public OperationProcessor operationId() {
         return this;
     }
-    
+
+    public OperationProcessor contentType() {
+        if (codegenOperation.consumes != null && !codegenOperation.consumes.isEmpty()) {
+            for (Map<String, String> consume : codegenOperation.consumes) {
+                String mediaType = consume.get("mediaType");
+                if (mediaType != null) {
+                    for (SupportedContentType contentType : SupportedContentType.values()) {
+                        if (contentType.getValue().equals(mediaType)) {
+                            codegenOperation.vendorExtensions.put("consume", contentType.getValue());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return this;
+    }
+
+
 }

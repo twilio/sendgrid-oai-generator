@@ -6,6 +6,7 @@ import com.sendgrid.oai.common.TemplateModifier;
 import com.sendgrid.oai.constants.EnumConstants;
 import io.swagger.v3.oas.models.OpenAPI;
 import org.openapitools.codegen.CodegenOperation;
+import org.openapitools.codegen.SupportingFile;
 import org.openapitools.codegen.languages.PythonClientCodegen;
 import org.openapitools.codegen.model.ModelMap;
 import org.openapitools.codegen.model.ModelsMap;
@@ -34,35 +35,53 @@ public class SendgridPythonGenerator extends PythonClientCodegen {
         setTemplateDir(EnumConstants.MustacheLocation.PYTHON.getValue());
         setModelPackage("models");
         apiTemplateFiles().put("api.mustache", ".py");
+        
     }
 
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
         apiPackageGenerator.setOutputDir(openAPI);
-
         tagGenerator.updateOperationTags(openAPI);
         this.openAPI = openAPI;
+        // Used for setting import base package.
+        this.setPackageName(this.apiPackage);
+        // Making sure api and models are generated with correct directory structure
+        String modelPackage = this.modelPackage.replace(".", "/");
+        String apiPackage = this.apiPackage.replace(".", "/");
+        
+        // __init__.mustache, __init__api.mustache, __init__model.mustache, __init__package.mustache
+        // apiInfo ==> ApiInfoMap
+        // apis ==> OperationsMap, org.openapitools.codegen.model
+        this.supportingFiles.add(new SupportingFile("__init__model.mustache", modelPackage, "__init__.py"));
+        this.supportingFiles.add(new SupportingFile("__init__api.mustache", apiPackage, "__init__.py"));
+        //this.supportingFiles.add(new SupportingFile("__init__.mustache", "sendgrid/rest/api/alerts", "__init__.py"));
+        //this.supportingFiles.add(new SupportingFile("__init__api.mustache", apiPackage, "__init__.py"));
     }
 
     @Override
     public OperationsMap postProcessOperationsWithModels(final OperationsMap objs, List<ModelMap> allModels) {
         final OperationsMap results = super.postProcessOperationsWithModels(objs, allModels);
-        CodegenOperation codegenOperation = processCodegenOperations(results.getOperations().getOperation());
-        results.put("resources", codegenOperation);
+        PythonApiResource pythonApiResource = processCodegenOperations(results.getOperations().getOperation());
+        results.put("resources", pythonApiResource);
         return results;
     }
+    
+    @Override
+    public Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs) {
+        Map<String, Object> bundle = super.postProcessSupportingFileData(objs);
+        bundle.put("api_version", "V3");
+        return bundle;
+    }
 
-    private CodegenOperation processCodegenOperations(final List<CodegenOperation> operations) {
-        PythonOperationProcessor operationProcessor = new PythonOperationProcessor();
+    private PythonApiResource processCodegenOperations(final List<CodegenOperation> operations) {
         if (operations.isEmpty() || operations.size() > 1) {
             throw new RuntimeException("Grouping of operation not allowed, Remove similar tags from multiple operations");
         }
-        
-        CodegenOperation operation = operations.get(0);
-        operationProcessor.setCodegenOperation(operation);
-        
-        return operation;
+        PythonOperationProcessor operationProcessor = new PythonOperationProcessor();
+        PythonApiResourceBuilder pythonApiResourceBuilder = new PythonApiResourceBuilder(operations, operationProcessor);
+        pythonApiResourceBuilder.process();
+        return pythonApiResourceBuilder.build();
     }
 
     @Override

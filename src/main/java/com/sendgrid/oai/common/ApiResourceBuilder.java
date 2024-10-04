@@ -34,7 +34,8 @@ public class ApiResourceBuilder {
                     .queryParams()
                     .headerParams()
                     .body()
-                    .response();
+                    .response()
+                    .contentType();
         }
         return this;
     }

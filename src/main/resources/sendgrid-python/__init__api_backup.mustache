@@ -1,0 +1,17 @@
+# import apis into api package
+{{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classFilename}} import {{classname}}
+{{/apis}}{{/apiInfo}}
+# apiinfo
+class {{api_version}}:
+  def __init__(self):
+{{#apiInfo}}{{#apis}}
+    self._{{classFilename}} = None{{/apis}}{{/apiInfo}}
+
+{{#apiInfo}}{{#apis}}
+  @property
+  def {{classFilename}}(self):
+    if self._{{classFilename}} is None:
+      from .{{classFilename}} import {{classname}}
+      self._{{classFilename}} = {{classname}}()
+    return self._{{classFilename}}
+{{/apis}}{{/apiInfo}}

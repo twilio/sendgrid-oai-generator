@@ -21,7 +21,7 @@ public class PythonApiPackageGenerator extends ApiPackageGenerator  {
         version.replaceAll("[-._]", "");
         directory.replaceAll("[-._]", "");
 
-        String apiPackage = EnumConstants.BasePackage.PYTHON.getValue() + "." + domain + "." + version + "." +directory;
+        String apiPackage = EnumConstants.BasePackage.PYTHON.getValue() + "." + domain + "." + directory + "." +version;
         //String apiPackage = domain + "." + version + "." +directory;
         defaultCodegen.setApiPackage(apiPackage);
         defaultCodegen.setModelPackage(apiPackage + "." + "models");

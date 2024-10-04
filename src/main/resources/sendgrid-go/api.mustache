@@ -15,7 +15,7 @@ import (
 
 {{#operation}}
 
-type {{{nickname}}}Params struct {
+type {{{nickname}}}Param struct {
 {{#allParams}}
     // {{{description}}}
     {{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
@@ -23,7 +23,7 @@ type {{{nickname}}}Params struct {
 }
 
 {{#allParams}}
-func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}}) (*{{{nickname}}}Params){
+func (params *{{{nickname}}}Param) Set{{paramName}}({{paramName}} {{{dataType}}}) (*{{{nickname}}}Param){
     params.{{paramName}} = &{{paramName}}
     return params
 }
@@ -33,7 +33,7 @@ func (params *{{{nickname}}}Params) Set{{paramName}}({{paramName}} {{{dataType}}
 {{#notes}}
 // {{{notes}}}
 {{/notes}}
-func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{/hasParams}}) (interface{}, error) {
+func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Param{{/hasParams}}) (interface{}, error) {
     path := "{{{path}}}"
     {{>partial_serialization}}
 
@@ -76,7 +76,7 @@ func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Params{{
 {{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
-func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{^isPathParam}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/isPathParam}}{{/allParams}}params *{{{nickname}}}Params, pageToken, pageNumber string) (*{{{returnType}}}, error) {
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{^isPathParam}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/isPathParam}}{{/allParams}}params *{{{nickname}}}Param, pageToken, pageNumber string) (*{{{returnType}}}, error) {
     path := "{{{path}}}"
 
     {{>partial_serialization}}
@@ -103,7 +103,7 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{^i
 }
 
 // Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) ({{{returnType}}}, error) {
+func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Param) ({{{returnType}}}, error) {
 	response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
 
 	records := make({{{returnType}}}, 0)
@@ -119,9 +119,9 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 }
 
 // Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (chan {{{returnBaseType}}}, chan error) {
+func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Param) (chan {{{returnBaseType}}}, chan error) {
 	if params == nil {
-		params = &{{{nickname}}}Params{}
+		params = &{{{nickname}}}Param{}
 	}
 	params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
@@ -141,7 +141,7 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 }
 
 
-func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{returnContainer}}}, params *{{{nickname}}}Params, recordChannel chan {{{returnBaseType}}}, errorChannel chan error) {
+func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{returnContainer}}}, params *{{{nickname}}}Param, recordChannel chan {{{returnBaseType}}}, errorChannel chan error) {
 	curRecord := 1
 
 	for response != nil {

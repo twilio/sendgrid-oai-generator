@@ -1,2 +1,3 @@
 com.sendgrid.oai.java.SendgridJavaGenerator
 com.sendgrid.oai.python.SendgridPythonGenerator
+com.sendgrid.oai.go.SendgridGoGenerator

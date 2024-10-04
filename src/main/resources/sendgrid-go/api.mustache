@@ -1,0 +1,79 @@
+{{>partial_header}}
+package openapi
+
+{{#operations}}
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+    "net/http"
+
+	{{#imports}}
+    "{{import}}"
+    {{/imports}}
+    "github.com/sendgrid/sendgrid-go/client"
+)
+
+{{#operation}}
+
+type {{{nickname}}}Param struct {
+{{#allParams}}
+    // {{{description}}}
+    {{paramName}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}}{{/vendorExtensions.x-go-custom-tag}}`
+{{/allParams}}
+}
+
+{{#allParams}}
+func (params *{{{nickname}}}Param) Set{{paramName}}({{paramName}} {{{dataType}}}) (*{{{nickname}}}Param){
+    params.{{paramName}} = &{{paramName}}
+    return params
+}
+{{/allParams}}
+
+{{^vendorExtensions.x-is-read-operation}}
+{{#notes}}
+// {{{notes}}}
+{{/notes}}
+func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Param{{/hasParams}}) (interface{}, error) {
+    path := "{{{path}}}"
+    {{>partial_serialization}}
+
+{{#hasHeaderParams}}
+{{#headerParams}}
+	if params != nil && params.{{paramName}} != nil {
+		headers["{{{baseName}}}"] = *params.{{paramName}}
+	}
+{{/headerParams}}
+{{/hasHeaderParams}}
+{{#vendorExtensions.has-body}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
+{{/vendorExtensions.has-body}}
+{{^vendorExtensions.has-body}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
+{{/vendorExtensions.has-body}}
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+{{#vendorExtensions.x-valid-responses}}
+    if resp.StatusCode == {{code}} {
+        {{#vendorExtensions.x-is-string}}
+            s := ""
+            ps := &s
+        {{/vendorExtensions.x-is-string}}
+        {{^vendorExtensions.x-is-string}}
+            ps := &{{dataType}}{}
+        {{/vendorExtensions.x-is-string}}
+        if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+            return nil, err
+        }
+
+        return ps, err
+    }
+{{/vendorExtensions.x-valid-responses}}
+    return http.Response{StatusCode: resp.StatusCode, Body: resp.Body, Header: resp.Header}, nil
+}
+{{/vendorExtensions.x-is-read-operation}}
+{{/operation}}
+{{/operations}}

@@ -15,6 +15,14 @@ public class OperationProcessor {
         this.codegenOperation = codegenOperation;
     }
 
+    public OperationProcessor params() {
+        this.pathParams();
+        this.queryParams();
+        this.headerParams();
+        this.body();
+        return this;
+    }
+
     public OperationProcessor pathParams() {
         if (codegenOperation.pathParams != null && !codegenOperation.pathParams.isEmpty()) {
             codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_PATH_PARAMS, true);
@@ -35,7 +43,7 @@ public class OperationProcessor {
          */
 //        if (codegenOperation.queryParams != null && !codegenOperation.queryParams.isEmpty()) {
 //            codegenOperation.vendorExtensions.put(ApplicationConstants.HAS_QUERY_PARAMS, true);
-//            boolean isRemoved = codegenOperation.queryParams.removeIf(s -> !s.paramName.equals(QueryParams.OFFSET.getValue()) 
+//            boolean isRemoved = codegenOperation.queryParams.removeIf(s -> !s.paramName.equals(QueryParams.OFFSET.getValue())
 //                    && !s.paramName.equals(QueryParams.LIMIT.getValue()));
 //            if (isRemoved) {
 //                CodegenParameter query = new CodegenParameter();
@@ -67,7 +75,7 @@ public class OperationProcessor {
     public OperationProcessor response() {
         return this;
     }
-    
+
     public OperationProcessor fileName() {
         return this;
     }

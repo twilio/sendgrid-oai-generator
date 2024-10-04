@@ -1,0 +1,67 @@
+{{#pathParams}}
+    if params != nil && params.{{paramName}} != nil {
+        path = strings.Replace(path, "{"+"{{paramName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}*params.{{paramName}}{{^isString}}){{/isString}}, -1)
+    }
+{{/pathParams}}
+
+    data := url.Values{}
+{{^vendorExtensions.has-body}}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
+
+{{/vendorExtensions.has-body}}
+{{#vendorExtensions.has-body}}
+    headers := map[string]interface{}{
+        "Content-Type": "application/json",
+    }
+
+{{/vendorExtensions.has-body}}
+{{#allParams}}
+{{#isBodyParam}}
+    body := []byte{}
+    if params != nil && params.{{paramName}} != nil {
+        b, err := json.Marshal(*params.{{paramName}})
+        if err != nil {
+            return nil, err
+        }
+        body = b
+    }
+{{/isBodyParam}}
+{{^isBodyParam}}
+{{^isHeaderParam}}
+{{^isPathParam}}
+{{^vendorExtensions.x-custom}}
+    if params != nil && params.{{paramName}} != nil {
+{{#isArray}}
+        for _, item  := range *params.{{paramName}} {
+            v, err := json.Marshal(item)
+
+            if err != nil {
+            return nil, err
+            }
+
+            data.Add("{{{baseName}}}", string(v))
+
+        }
+{{/isArray}}
+{{^isArray}}
+{{#vendorExtensions.x-marshal}}
+        v, err := json.Marshal(params.{{paramName}})
+
+        if err != nil {
+        return nil, err
+        }
+
+        data.Set("{{{baseName}}}", string(v))
+{{/vendorExtensions.x-marshal}}
+{{^vendorExtensions.x-marshal}}
+        data.Set("{{{baseName}}}", {{^isString}}fmt.Sprint({{/isString}}{{#isDateTime}}({{/isDateTime}}*params.{{paramName}}{{^isString}}{{#isDateTime}}).Format(time.RFC3339){{/isDateTime}}){{/isString}})
+{{/vendorExtensions.x-marshal}}
+{{/isArray}}
+    }
+{{/vendorExtensions.x-custom}}
+{{/isPathParam}}
+{{/isHeaderParam}}
+{{/isBodyParam}}
+{{/allParams}}

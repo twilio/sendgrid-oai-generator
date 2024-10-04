@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+    "net/http"
 
 	{{#imports}}
     "{{import}}"
@@ -71,124 +72,8 @@ func (c *ApiService) {{{nickname}}}({{#hasParams}}params *{{{nickname}}}Param{{/
         return ps, err
     }
 {{/vendorExtensions.x-valid-responses}}
-    return nil, nil
+    return http.Response{StatusCode: resp.StatusCode, Body: resp.Body, Header: resp.Header}, nil
 }
-{{/vendorExtensions.x-is-read-operation}}
-{{#vendorExtensions.x-is-read-operation}}
-// Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
-func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{^isPathParam}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/isPathParam}}{{/allParams}}params *{{{nickname}}}Param, pageToken, pageNumber string) (*{{{returnType}}}, error) {
-    path := "{{{path}}}"
-
-    {{>partial_serialization}}
-    if pageToken != "" {
-        data.Set("PageToken", pageToken)
-    }
-    if pageNumber != "" {
-        data.Set("Page", pageNumber)
-    }
-
-    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
-    if err != nil {
-        return nil, err
-    }
-
-    defer resp.Body.Close()
-
-    ps := &{{{returnType}}}{}
-    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-        return nil, err
-    }
-
-    return ps, err
-}
-
-// Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
-func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Param) ({{{returnType}}}, error) {
-	response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
-
-	records := make({{{returnType}}}, 0)
-	for record := range response {
-		records = append(records, record)
-	}
-
-	if err := <-errors; err != nil {
-		return nil, err
-	}
-
-	return records, nil
-}
-
-// Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
-func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Param) (chan {{{returnBaseType}}}, chan error) {
-	if params == nil {
-		params = &{{{nickname}}}Param{}
-	}
-	params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
-
-	recordChannel := make(chan {{{returnBaseType}}}, 1)
-	errorChannel := make(chan error, 1)
-
-	response, err := c.Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, "", "")
-	if err != nil {
-		errorChannel <- err
-		close(recordChannel)
-		close(errorChannel)
-	} else {
-		go c.stream{{{vendorExtensions.x-domain-name}}}(response, params, recordChannel, errorChannel)
-	}
-
-	return recordChannel, errorChannel
-}
-
-
-func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{returnContainer}}}, params *{{{nickname}}}Param, recordChannel chan {{{returnBaseType}}}, errorChannel chan error) {
-	curRecord := 1
-
-	for response != nil {
-		responseRecords := response.{{{vendorExtensions.x-payload-field-name}}}
-		for item := range responseRecords {
-			recordChannel <- responseRecords[item]
-			curRecord += 1
-			if params.Limit != nil && *params.Limit < curRecord {
-				close(recordChannel)
-				close(errorChannel)
-				return
-			}
-		}
-
-		record, err := client.GetNext(c.baseURL, response, c.getNext{{{returnContainer}}})
-		if err != nil {
-			errorChannel <- err
-			break
-		} else if record == nil {
-			break
-		}
-
-		response = record.(*{{{returnContainer}}})
-	}
-
-	close(recordChannel)
-	close(errorChannel)
-}
-
-func (c *ApiService) getNext{{{returnContainer}}}(nextPageUrl string) (interface{}, error) {
-    if nextPageUrl == "" {
-        return nil, nil
-    }
-    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil)
-    if err != nil {
-        return nil, err
-    }
-
-    defer resp.Body.Close()
-
-    ps := &{{{returnContainer}}}{}
-    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-        return nil, err
-    }
-    return ps, nil
-}
-
 {{/vendorExtensions.x-is-read-operation}}
 {{/operation}}
 {{/operations}}

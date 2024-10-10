@@ -92,7 +92,7 @@ def generate_client_file(language, spec_location, output_path):
         api_path = os.path.join(output_path, 'rest/api')
         for version in sorted(os.listdir(api_path)):
             for domain in sorted(os.listdir(os.path.join(api_path, version))):
-                lib_path = f'github.com/sendgrid/sendgrid-go/rest/api/{version}/{domain}'
+                lib_path = f'github.com/sendgrid/sendgrid-go/v4/rest/api/{version}/{domain}'
                 domain_name_camel_case = ''.join([word.capitalize() for word in (domain + '_' + version).split('_')])
                 domains_transformed.append({"domain": domain_name_camel_case, "path": lib_path})
 
